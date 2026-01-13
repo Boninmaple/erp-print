@@ -24,13 +24,13 @@
             position: relative;
         }
 
-        /* 头部区域：关键修复，确保相对定位和文字居中 */
+        /* 头部区域 */
         .header {
             text-align: center;      /* 确保文字居中 */
             margin-bottom: 15px;
-            position: relative;      /* 作为绝对定位元素的父容器 */
+            position: relative;      /* 定位基准 */
             padding-top: 10px;
-            min-height: 80px;        /* 确保高度足够 */
+            min-height: 80px;
         }
 
         /* Logo位置：左上角绝对定位 */
@@ -38,12 +38,12 @@
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 10; /* 确保Logo在最上层 */
+            z-index: 10;
         }
         
         /* Logo图片样式 */
         .logo-img {
-            height: 55px; /* 高度约1.5cm */
+            height: 55px; /* 约1.5cm高 */
             width: auto;
             display: block;
         }
@@ -56,8 +56,8 @@
             margin: 0;
             margin-bottom: 8px;
             position: relative;
-            z-index: 1; /* 文字层级 */
-            padding: 0 80px; /* 防止文字过长碰到左右的Logo或二维码（虽然居中一般不会） */
+            z-index: 1;
+            padding: 0 80px; /* 防止标题过长被遮挡 */
         }
         .card-name {
             font-size: 20px;
@@ -100,6 +100,7 @@
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-remarks { height: 60px; }
+        .h-sign { height: 60px; } /* 签字栏高度 */
 
         /* 打印适配 */
         @media print {
@@ -242,6 +243,29 @@
                 </td>
             </tr>
         </table>
+
+        <!-- 第五部分：签字栏 (新增) -->
+        <table class="grid-table">
+            <colgroup>
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+            </colgroup>
+            <tr class="bg-gray h-35">
+                <td>制单人</td>
+                <td>生产审核</td>
+                <td>车间主任复核</td>
+                <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
+            </tr>
+            <tr class="h-sign">
+                <td style="font-size: 18px; font-weight: bold;">邹丽</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
     </div>
 
     <!-- 打印按钮 -->
