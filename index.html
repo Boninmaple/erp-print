@@ -24,12 +24,13 @@
             position: relative;
         }
 
-        /* 头部区域 */
+        /* 头部区域：关键修复，确保相对定位和文字居中 */
         .header {
-            text-align: center;
+            text-align: center;      /* 确保文字居中 */
             margin-bottom: 15px;
-            position: relative;
+            position: relative;      /* 作为绝对定位元素的父容器 */
             padding-top: 10px;
+            min-height: 80px;        /* 确保高度足够 */
         }
 
         /* Logo位置：左上角绝对定位 */
@@ -37,13 +38,12 @@
             position: absolute;
             top: 0;
             left: 0;
-            display: flex;
-            align-items: center;
+            z-index: 10; /* 确保Logo在最上层 */
         }
         
         /* Logo图片样式 */
         .logo-img {
-            height: 55px; /* 高度控制，约1.5-2cm高，保持比例 */
+            height: 55px; /* 高度约1.5cm */
             width: auto;
             display: block;
         }
@@ -55,6 +55,9 @@
             letter-spacing: 2px;
             margin: 0;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 1; /* 文字层级 */
+            padding: 0 80px; /* 防止文字过长碰到左右的Logo或二维码（虽然居中一般不会） */
         }
         .card-name {
             font-size: 20px;
@@ -75,7 +78,7 @@
             border-collapse: collapse;
             border-spacing: 0;
             border: 1px solid black;
-            margin-bottom: -1px; /* 消除表格之间的双重边框 */
+            margin-bottom: -1px; 
             table-layout: fixed;
         }
 
@@ -95,7 +98,7 @@
 
         /* 辅助类 */
         .text-left { text-align: left !important; padding-left: 8px !important; }
-        .h-35 { height: 35px; } /* 固定行高 */
+        .h-35 { height: 35px; } 
         .h-remarks { height: 60px; }
 
         /* 打印适配 */
@@ -109,17 +112,18 @@
 <body>
 
     <div class="sheet-container">
-        <!-- 头部：包含Logo、标题、二维码 -->
-        .header {
+        <!-- 头部区域 -->
+        <div class="header">
+            <!-- Logo -->
             <div class="logo-box">
-                <!-- 请确保将Logo图片重命名为 logo.jpg 并放在同一目录下 -->
-                <img src="logo.jpg" alt="博江管件" class="logo-img">
+                <img src="logo.jpg" alt="Logo" class="logo-img">
             </div>
 
+            <!-- 中间标题 -->
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
 
-            <!-- 二维码 -->
+            <!-- 右侧二维码 -->
             <div id="qrcode"></div>
         </div>
 
@@ -164,13 +168,13 @@
         <!-- 第二部分：工序流程 -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 15%"> <!-- 工序名称 -->
-                <col style="width: 10%"> <!-- 工序 -->
-                <col style="width: 10%"> <!-- 数量 -->
-                <col style="width: 10%"> <!-- 不合格 -->
-                <col style="width: 15%"> <!-- 经手人 -->
-                <col style="width: 15%"> <!-- 检查员 -->
-                <col style="width: 25%"> <!-- 日期 -->
+                <col style="width: 15%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 15%"> 
+                <col style="width: 15%"> 
+                <col style="width: 25%"> 
             </colgroup>
             <thead>
                 <tr class="bg-gray h-35">
@@ -235,7 +239,6 @@
             <tr>
                 <td class="bg-gray h-remarks">备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
                 <td class="text-left" style="vertical-align: top; padding: 5px;" id="cust_req">
-                    <!-- 备注内容 -->
                 </td>
             </tr>
         </table>
@@ -252,33 +255,26 @@
     </div>
 
     <script>
-        // 1. 获取URL参数
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name) || "";
         }
 
-        // 2. 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
-        
-        // 订单号/合同号
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
-
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
         document.getElementById('material').innerText = getQueryParam('material');
         document.getElementById('date_due').innerText = getQueryParam('date_due');
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('standard').innerText = getQueryParam('standard');
-
-        // 备注
+        
         const req = getQueryParam('cust_req');
         if(req) {
             document.getElementById('cust_req').innerText = req;
         }
 
-        // 3. 生成二维码
         if(orderId) {
             new QRCode(document.getElementById("qrcode"), {
                 text: orderId,
@@ -288,6 +284,5 @@
             });
         }
     </script>
-
 </body>
 </html>
