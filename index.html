@@ -1,0 +1,128 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>生产流转单</title>
+    <style>
+        /* 页面基础样式 */
+        body { font-family: "黑体", "Microsoft YaHei", sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; background-color: white; }
+        .print-container { border: 2px solid #000; padding: 20px; box-sizing: border-box; }
+        
+        /* 标题和信息栏 */
+        h1 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-top: 0; color: #000; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px; color: #000; line-height: 1.5; }
+        
+        /* 表格样式 */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 12px 8px; text-align: center; font-size: 16px; color: #000; }
+        th { background-color: #f0f0f0; font-weight: bold; }
+        
+        /* 底部签字栏 */
+        .footer { margin-top: 60px; display: flex; justify-content: space-between; font-size: 18px; color: #000; }
+        
+        /* 二维码区域 */
+        #qrcode { margin-top: -10px; }
+        
+        /* 打印专用样式（隐藏按钮，去除边距） */
+        @media print {
+            .no-print { display: none !important; }
+            .print-container { border: none; padding: 0; } 
+            body { padding: 0; margin: 0; }
+            @page { margin: 20mm; }
+        }
+    </style>
+    <!-- 引入二维码生成库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="print-container">
+        <h1>生产流转单</h1>
+        
+        <div class="info-row">
+            <div>
+                <div>订单号：<b id="orderId"></b></div>
+                <div style="margin-top: 10px;">打印日期：<b id="date"></b></div>
+            </div>
+            <!-- 二维码 -->
+            <div id="qrcode" title="扫码查看详情"></div>
+        </div>
+        
+        <div class="info-row">
+            <span>客户代号：<b id="client" style="font-size: 20px;"></b></span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 30%;">产品名称</th>
+                    <th style="width: 30%;">规格型号</th>
+                    <th style="width: 15%;">数量</th>
+                    <th style="width: 25%;">交货日期</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="productName"></td>
+                    <td id="spec"></td>
+                    <td id="qty" style="font-weight: bold; font-size: 18px;"></td>
+                    <td id="deadline" style="color: red; font-weight: bold;"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 备注栏（可选） -->
+        <div style="margin-top: 20px; border: 1px solid #000; padding: 10px; min-height: 50px;">
+            生产备注：
+        </div>
+
+        <div class="footer">
+            <span>制单人：_________</span>
+            <span>车间接收：_________</span>
+        </div>
+    </div>
+
+    <!-- 打印按钮区 -->
+    <div class="no-print" style="text-align: center; margin-top: 40px; padding-bottom: 40px;">
+        <button onclick="window.print()" style="padding: 15px 50px; font-size: 20px; cursor: pointer; background-color: #07c160; color: white; border: none; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            🖨️ 确认无误，立即打印
+        </button>
+        <p style="color: #666; margin-top: 10px; font-size: 14px;">(请确保打印机已连接)</p>
+    </div>
+
+    <script>
+        // 1. 获取链接参数
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name) || "";
+        }
+
+        // 2. 自动填空
+        document.getElementById('orderId').innerText = getQueryParam('order_id');
+        document.getElementById('date').innerText = new Date().toLocaleDateString();
+        document.getElementById('client').innerText = getQueryParam('client_name');
+        document.getElementById('productName').innerText = getQueryParam('prod_name');
+        document.getElementById('spec').innerText = getQueryParam('spec');
+        document.getElementById('qty').innerText = getQueryParam('qty');
+        document.getElementById('deadline').innerText = getQueryParam('date_due');
+
+        // 3. 生成二维码
+        var orderId = getQueryParam('order_id');
+        if(orderId) {
+            new QRCode(document.getElementById("qrcode"), {
+                text: orderId,
+                width: 90,
+                height: 90,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        } else {
+            // 如果没订单号，显示一行字
+            document.getElementById("qrcode").innerHTML = "暂无单号";
+        }
+    </script>
+</body>
+</html>
