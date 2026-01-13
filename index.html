@@ -5,68 +5,77 @@ layout: null
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>生产流转单</title>
+    <title>生产计划流转卡</title>
     <style>
-        /* 页面基础样式 */
-        body { font-family: "黑体", "Microsoft YaHei", sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; background-color: white; }
-        .print-container { border: 2px solid #000; padding: 20px; box-sizing: border-box; }
+        /* 页面基础设置：A4纸张适配 */
+        body { font-family: "SimHei", "黑体", sans-serif; padding: 20px; max-width: 860px; margin: 0 auto; background-color: white; color: #000; }
         
-        /* 标题和信息栏 */
-        h1 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-top: 0; color: #000; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px; color: #000; line-height: 1.5; }
+        /* 外框：模拟真实单据的加粗边框 */
+        .print-container { border: 3px solid #000; padding: 20px; position: relative; min-height: 500px; }
         
-        /* 表格样式优化 - 6列布局 */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
-        th, td { border: 1px solid #000; padding: 8px 4px; text-align: center; font-size: 14px; color: #000; word-wrap: break-word; }
-        th { background-color: #f0f0f0; font-weight: bold; font-size: 15px;}
+        /* 标题样式 */
+        h1 { text-align: center; font-size: 28px; margin-top: 5px; margin-bottom: 25px; letter-spacing: 5px; text-decoration: underline; font-weight: 900; }
         
-        /* 备注栏样式 */
-        .note-box { margin-top: 20px; border: 1px solid #000; padding: 10px; min-height: 60px; font-size: 16px; line-height: 1.4; color: #000; }
-        .note-label { font-weight: bold; display: block; margin-bottom: 5px; }
+        /* 顶部信息栏（订单号、日期、二维码） */
+        .top-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 1px dashed #666; padding-bottom: 10px; }
+        .top-left { font-size: 16px; line-height: 1.8; }
+        .top-left b { font-size: 18px; margin-left: 5px; }
         
-        /* 底部签字栏 */
-        .footer { margin-top: 50px; display: flex; justify-content: space-between; font-size: 18px; color: #000; }
+        /* 核心表格样式：高度还原 */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 2px solid #000; }
+        th, td { border: 1px solid #000; padding: 10px 5px; text-align: center; font-size: 16px; }
         
-        /* 二维码区域 */
-        #qrcode { margin-top: -10px; }
+        /* 表头加深颜色，模拟单据 */
+        th { background-color: #f0f0f0; font-weight: bold; font-size: 17px; height: 35px; }
         
-        /* 打印专用样式 */
+        /* 数据行高度，留出一点空间感 */
+        td { height: 40px; vertical-align: middle; }
+        
+        /* 下半部分：生产备注区（留白给车间写） */
+        .note-section { border: 2px solid #000; padding: 10px; min-height: 150px; margin-bottom: 20px; position: relative; }
+        .note-title { font-weight: bold; font-size: 18px; background-color: white; position: absolute; top: -12px; left: 15px; padding: 0 10px; }
+        .cust-req-content { font-size: 16px; margin-top: 10px; white-space: pre-wrap; line-height: 1.6; }
+        
+        /* 底部签字栏：四列布局 */
+        .sign-area { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 20px; }
+        .sign-box { text-align: left; font-size: 18px; width: 22%; }
+        .sign-line { border-bottom: 1px solid #000; display: inline-block; width: 100px; }
+        
+        /* 打印适配 */
         @media print {
             .no-print { display: none !important; }
-            .print-container { border: none; padding: 0; } 
+            .print-container { border: 3px solid #000; padding: 15px; } 
             body { padding: 0; margin: 0; }
-            @page { margin: 15mm; }
+            @page { margin: 10mm; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <div class="print-container">
-        <h1>生产流转单</h1>
+        <h1>生产计划流转卡</h1>
         
-        <div class="info-row">
-            <div>
-                <div>订单号：<b id="orderId"></b></div>
-                <div style="margin-top: 10px;">打印日期：<b id="date"></b></div>
+        <!-- 顶部：订单信息+二维码 -->
+        <div class="top-info">
+            <div class="top-left">
+                <div>订单编号：<b id="orderId"></b></div>
+                <div>打印日期：<b id="date"></b></div>
+                <div>顾客名称：<b id="client" style="font-size: 20px;"></b></div>
             </div>
-            <!-- 二维码 -->
-            <div id="qrcode" title="扫码查看详情"></div>
-        </div>
-        
-        <div class="info-row">
-            <span>客户代号：<b id="client" style="font-size: 20px;"></b></span>
+            <!-- 二维码放在右上角，方便扫码 -->
+            <div id="qrcode" title="扫码查看电子档"></div>
         </div>
 
-        <!-- 核心表格：已增加材质和标准 -->
+        <!-- 中部：核心生产数据表 -->
         <table>
             <thead>
                 <tr>
-                    <th style="width: 20%;">产品名称</th>
-                    <th style="width: 20%;">规格型号</th>
+                    <th style="width: 25%;">产品名称</th>
+                    <th style="width: 20%;">规格/图号</th>
                     <th style="width: 15%;">材质</th>
-                    <th style="width: 15%;">执行标准</th>
+                    <th style="width: 15%;">制造标准</th>
                     <th style="width: 10%;">数量</th>
-                    <th style="width: 20%;">交货日期</th>
+                    <th style="width: 15%;">交货期</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,39 +84,55 @@ layout: null
                     <td id="spec"></td>
                     <td id="material"></td>
                     <td id="standard"></td>
-                    <td id="qty" style="font-weight: bold; font-size: 16px;"></td>
+                    <td id="qty" style="font-weight: bold; font-size: 18px;"></td>
                     <td id="deadline" style="color: red; font-weight: bold;"></td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- 备注栏：已连接客户要求 -->
-        <div class="note-box">
-            <span class="note-label">生产备注 / 客户要求：</span>
-            <span id="custReq" style="white-space: pre-wrap;"></span>
+        <!-- 下部：生产备注/客户要求（大框留白） -->
+        <div class="note-section">
+            <span class="note-title">📝 生产备注 / 客户要求 (车间填写区)</span>
+            <!-- 这里显示系统传过来的客户要求，如果没有就留空 -->
+            <div id="custReq" class="cust-req-content"></div>
         </div>
 
-        <div class="footer">
-            <!-- 默认显示邹丽，如果公式传了maker参数则覆盖 -->
-            <span>制单人：<span id="maker">邹丽</span></span>
-            <span>车间接收：_________</span>
+        <!-- 底部：签字确认栏 (4个位置) -->
+        <div class="sign-area">
+            <div class="sign-box">
+                制单人：<br><br>
+                <span id="maker" style="font-weight: bold; font-size: 20px;"></span>
+            </div>
+            <div class="sign-box">
+                审核：<br><br>
+                __________
+            </div>
+            <div class="sign-box">
+                采购员：<br><br>
+                __________
+            </div>
+            <div class="sign-box">
+                车间复核：<br><br>
+                __________
+            </div>
         </div>
     </div>
 
+    <!-- 打印按钮 -->
     <div class="no-print" style="text-align: center; margin-top: 40px; padding-bottom: 40px;">
-        <button onclick="window.print()" style="padding: 15px 50px; font-size: 20px; cursor: pointer; background-color: #07c160; color: white; border: none; border-radius: 4px; font-weight: bold;">
-            🖨️ 确认无误，立即打印
+        <button onclick="window.print()" style="padding: 15px 60px; font-size: 22px; cursor: pointer; background-color: #07c160; color: white; border: none; border-radius: 6px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            🖨️ 打印流转卡
         </button>
     </div>
 
     <script>
-        // 1. 获取链接参数
+        // 获取参数工具
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name) || "";
         }
 
-        // 2. 自动填空
+        // 填充数据
         document.getElementById('orderId').innerText = getQueryParam('order_id');
         document.getElementById('date').innerText = new Date().toLocaleDateString();
         document.getElementById('client').innerText = getQueryParam('client_name');
@@ -116,28 +141,31 @@ layout: null
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('deadline').innerText = getQueryParam('date_due');
         
-        // --- 新增的三个字段 ---
-        document.getElementById('material').innerText = getQueryParam('material'); // 材质
-        document.getElementById('standard').innerText = getQueryParam('standard'); // 标准
-        document.getElementById('custReq').innerText = getQueryParam('cust_req');  // 客户要求
+        // 新增字段
+        document.getElementById('material').innerText = getQueryParam('material'); 
+        document.getElementById('standard').innerText = getQueryParam('standard');
         
-        // 制单人逻辑：如果有传参就用传参的，没传就默认显示邹丽
-        var makerParam = getQueryParam('maker');
-        if(makerParam) {
-            document.getElementById('maker').innerText = makerParam;
+        // 客户要求：如果有内容就显示，没内容就留空
+        var custReqText = getQueryParam('cust_req');
+        if(custReqText){
+             document.getElementById('custReq').innerText = "【系统录入】：\n" + custReqText + "\n\n---------------- (以下由车间补充) ----------------";
         }
 
-        // 3. 生成二维码
+        // 制单人：默认为邹丽
+        var makerText = getQueryParam('maker');
+        document.getElementById('maker').innerText = makerText ? makerText : "邹丽";
+
+        // 生成二维码
         var orderId = getQueryParam('order_id');
         if(orderId) {
             new QRCode(document.getElementById("qrcode"), {
                 text: orderId,
-                width: 90,
-                height: 90,
+                width: 100,
+                height: 100,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
             });
-        } else {
-            document.getElementById("qrcode").innerHTML = "暂无单号";
         }
     </script>
 </body>
