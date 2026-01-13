@@ -82,7 +82,7 @@
 
         .grid-table th, .grid-table td {
             border: 1px solid black;
-            padding: 4px 4px; /*稍微减小padding适应更多行*/
+            padding: 2px 2px; /* 进一步减小内边距，确保15行工序不撑破页面 */
             text-align: center;
             vertical-align: middle;
             font-weight: normal;
@@ -94,11 +94,11 @@
         }
 
         .text-left { text-align: left !important; padding-left: 8px !important; }
-        .h-35 { height: 35px; } /* 基础行高 */
-        .h-30 { height: 30px; } /* 工序行高（紧凑一点） */
-        .h-remarks { height: 50px; } /* 备注行高 */
+        .h-35 { height: 35px; } 
+        .h-30 { height: 28px; } /* 工序行高微调为28px，更保险 */
+        .h-remarks { height: 50px; } 
         
-        /* 签字栏特定样式 */
+        /* 签字栏 */
         .sign-cell {
             height: 60px; 
             vertical-align: top !important;
@@ -141,7 +141,7 @@
             <div id="qrcode"></div>
         </div>
 
-        <!-- 第一部分：基础信息 -->
+        <!-- 第一部分：基础信息 (按您要求的顺序) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -149,49 +149,49 @@
                 <col style="width: 15%">
                 <col style="width: 35%">
             </colgroup>
-            <!-- 1. 顾客 & 订单编号 -->
+            <!-- 行1: 顾客 | 订单编号 -->
             <tr class="h-35">
                 <td class="bg-gray">客户名称</td>
                 <td id="client_name"></td>
                 <td class="bg-gray">订单编号</td>
                 <td id="order_id"></td>
             </tr>
-            <!-- 2. 产品 & 规格 -->
+            <!-- 行2: 产品 | 合同编号 (移到这里) -->
             <tr class="h-35">
                 <td class="bg-gray">产品名称</td>
                 <td id="prod_name"></td>
+                <td class="bg-gray">合同编号</td>
+                <td id="contract_no"></td>
+            </tr>
+            <!-- 行3: 规格 | 材质 (顺延) -->
+            <tr class="h-35">
                 <td class="bg-gray">规格型号</td>
                 <td id="spec"></td>
-            </tr>
-            <!-- 4. 数量 & 合同编号 -->
-            <tr class="h-35">
-                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
-                <td id="qty"></td>
-                <td class="bg-gray">合同编号</td>
-                <td id="contract_no"></td> <!-- 这里放合同编号 -->
-            </tr>
-            <!-- 3. 材质 & 制造标准 -->
-            <tr class="h-35">
                 <td class="bg-gray">材&nbsp;&nbsp;&nbsp;&nbsp;质</td>
                 <td id="material"></td>
+            </tr>
+            <!-- 行4: 制造标准 | 数量 (顺延) -->
+            <tr class="h-35">
                 <td class="bg-gray">制造标准</td>
                 <td id="standard"></td>
+                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
+                <td id="qty"></td>
             </tr>
-            <!-- 5. 订单日期 & 交货日期 -->
+            <!-- 行5: 订单日期 | 交货日期 -->
             <tr class="h-35">
                 <td class="bg-gray">订单日期</td>
                 <td id="date_order"></td>
                 <td class="bg-gray">交货日期</td>
                 <td id="date_due"></td>
             </tr>
-            <!-- 6. 材料编号 -->
+            <!-- 行6: 材料编号 -->
             <tr class="h-35">
                 <td class="bg-gray">材料编号</td>
                 <td colspan="3" class="text-left"></td>
             </tr>
         </table>
 
-        <!-- 第二部分：15道工序流程 -->
+        <!-- 第二部分：15道工序流程 (更新完毕) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%"> 
@@ -214,26 +214,40 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- 15道工序，行高设为30px，紧凑 -->
+                <!-- 1.下料 -->
                 <tr class="h-30"><td>下&nbsp;&nbsp;&nbsp;&nbsp;料</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 2.成型 -->
                 <tr class="h-30"><td>成&nbsp;&nbsp;&nbsp;&nbsp;型</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 3.齐边、齐口 -->
                 <tr class="h-30"><td>齐边、齐口</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 4.焊接 -->
                 <tr class="h-30"><td>焊&nbsp;&nbsp;&nbsp;&nbsp;接</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 5.固溶 -->
                 <tr class="h-30"><td>固&nbsp;&nbsp;&nbsp;&nbsp;溶</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 6.整形 -->
                 <tr class="h-30"><td>整&nbsp;&nbsp;&nbsp;&nbsp;形</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 7.抛光 -->
                 <tr class="h-30"><td>抛&nbsp;&nbsp;&nbsp;&nbsp;光</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 8.喷丸、喷砂 -->
                 <tr class="h-30"><td>喷丸、喷砂</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 9.机加工 -->
                 <tr class="h-30"><td>机加工</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 10.酸洗 -->
                 <tr class="h-30"><td>酸&nbsp;&nbsp;&nbsp;&nbsp;洗</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 11.成品检验 -->
                 <tr class="h-30"><td>成品检验</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 12.PT探伤 -->
                 <tr class="h-30"><td>PT探伤</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 13.标识 -->
                 <tr class="h-30"><td>标&nbsp;&nbsp;&nbsp;&nbsp;识</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 14.包装 -->
                 <tr class="h-30"><td>包&nbsp;&nbsp;&nbsp;&nbsp;装</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 15.入库 -->
                 <tr class="h-30"><td>入&nbsp;&nbsp;&nbsp;&nbsp;库</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
             </tbody>
         </table>
 
-        <!-- 第三部分：技术要求 (带填写格) -->
+        <!-- 第三部分：技术要求 (已修改：下方增加空白填写格) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -243,16 +257,23 @@
                 <col style="width: 17%">
                 <col style="width: 17%">
             </colgroup>
-            <tr>
-                <td rowspan="2" class="bg-gray">技术要求</td>
+            <!-- 标题行 -->
+            <tr class="h-30">
+                <td class="bg-gray">技术要求</td>
                 <td class="bg-gray">高度</td>
                 <td class="bg-gray">盘大小</td>
                 <td class="bg-gray">R</td>
                 <td class="bg-gray">角度</td>
                 <td class="bg-gray">下料长度</td>
             </tr>
+            <!-- 填写行：每个标题下面都有对应的空格子 -->
             <tr class="h-35">
-                <td></td> <td></td> <td></td> <td></td> <td></td> 
+                <td></td> <!-- 技术要求下面的空格 -->
+                <td></td> <!-- 高度下面的空格 -->
+                <td></td> <!-- 盘大小下面的空格 -->
+                <td></td> <!-- R下面的空格 -->
+                <td></td> <!-- 角度下面的空格 -->
+                <td></td> <!-- 下料长度下面的空格 -->
             </tr>
         </table>
 
@@ -320,11 +341,11 @@
         // 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
         
-        // 注意：这里 order_id 现在是 订单编号
+        // 订单编号
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
         
-        // 新增：contract_no 合同编号
+        // 合同编号
         document.getElementById('contract_no').innerText = getQueryParam('contract_no');
 
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
