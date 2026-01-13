@@ -82,7 +82,7 @@
 
         .grid-table th, .grid-table td {
             border: 1px solid black;
-            padding: 6px 4px;
+            padding: 4px 4px; /*稍微减小padding适应更多行*/
             text-align: center;
             vertical-align: middle;
             font-weight: normal;
@@ -94,15 +94,16 @@
         }
 
         .text-left { text-align: left !important; padding-left: 8px !important; }
-        .h-35 { height: 35px; } 
-        .h-remarks { height: 60px; }
+        .h-35 { height: 35px; } /* 基础行高 */
+        .h-30 { height: 30px; } /* 工序行高（紧凑一点） */
+        .h-remarks { height: 50px; } /* 备注行高 */
         
         /* 签字栏特定样式 */
         .sign-cell {
-            height: 70px; /* 稍微增高给日期留空间 */
+            height: 60px; 
             vertical-align: top !important;
             position: relative;
-            padding-top: 10px !important;
+            padding-top: 5px !important;
         }
         .sign-date-box {
             position: absolute;
@@ -140,7 +141,7 @@
             <div id="qrcode"></div>
         </div>
 
-        <!-- 第一部分：基础信息 (按新顺序排列) -->
+        <!-- 第一部分：基础信息 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -148,7 +149,7 @@
                 <col style="width: 15%">
                 <col style="width: 35%">
             </colgroup>
-            <!-- 1. 顾客 & 合同 -->
+            <!-- 1. 顾客 & 订单编号 -->
             <tr class="h-35">
                 <td class="bg-gray">客户名称</td>
                 <td id="client_name"></td>
@@ -169,28 +170,28 @@
                 <td class="bg-gray">制造标准</td>
                 <td id="standard"></td>
             </tr>
-            <!-- 4. 数量 (单独一行) -->
+            <!-- 4. 数量 & 合同编号 -->
             <tr class="h-35">
                 <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
                 <td id="qty"></td>
-                <td class="bg-gray"></td> <!-- 留空 -->
-                <td></td> <!-- 留空 -->
+                <td class="bg-gray">合同编号</td>
+                <td id="contract_no"></td> <!-- 这里放合同编号 -->
             </tr>
-            <!-- 5. 订单日期 & 交货日期 (同行) -->
+            <!-- 5. 订单日期 & 交货日期 -->
             <tr class="h-35">
                 <td class="bg-gray">订单日期</td>
                 <td id="date_order"></td>
                 <td class="bg-gray">交货日期</td>
                 <td id="date_due"></td>
             </tr>
-            <!-- 6. 材料编号 (整行) -->
+            <!-- 6. 材料编号 -->
             <tr class="h-35">
                 <td class="bg-gray">材料编号</td>
                 <td colspan="3" class="text-left"></td>
             </tr>
         </table>
 
-        <!-- 第二部分：工序流程 -->
+        <!-- 第二部分：15道工序流程 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%"> 
@@ -202,9 +203,9 @@
                 <col style="width: 25%"> 
             </colgroup>
             <thead>
-                <tr class="bg-gray h-35">
+                <tr class="bg-gray h-30">
                     <td>工序名称</td>
-                    <td>工序</td>
+                    <td>备注</td>
                     <td>数量</td>
                     <td>不合格</td>
                     <td>经手人</td>
@@ -213,22 +214,26 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="h-35"><td>下&nbsp;&nbsp;&nbsp;&nbsp;料</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>成&nbsp;&nbsp;&nbsp;&nbsp;形</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>热处理</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>硬度检测</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>酸&nbsp;&nbsp;&nbsp;&nbsp;洗</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>粗加工</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>整&nbsp;&nbsp;&nbsp;&nbsp;形</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>表面处理</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>精加工</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>PT渗透</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>焊&nbsp;&nbsp;&nbsp;&nbsp;接</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="h-35"><td>标&nbsp;&nbsp;&nbsp;&nbsp;志</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <!-- 15道工序，行高设为30px，紧凑 -->
+                <tr class="h-30"><td>下&nbsp;&nbsp;&nbsp;&nbsp;料</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>成&nbsp;&nbsp;&nbsp;&nbsp;型</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>齐边、齐口</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>焊&nbsp;&nbsp;&nbsp;&nbsp;接</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>固&nbsp;&nbsp;&nbsp;&nbsp;溶</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>整&nbsp;&nbsp;&nbsp;&nbsp;形</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>抛&nbsp;&nbsp;&nbsp;&nbsp;光</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>喷丸、喷砂</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>机加工</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>酸&nbsp;&nbsp;&nbsp;&nbsp;洗</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>成品检验</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>PT探伤</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>标&nbsp;&nbsp;&nbsp;&nbsp;识</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>包&nbsp;&nbsp;&nbsp;&nbsp;装</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr class="h-30"><td>入&nbsp;&nbsp;&nbsp;&nbsp;库</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
             </tbody>
         </table>
 
-        <!-- 第三部分：技术要求 -->
+        <!-- 第三部分：技术要求 (带填写格) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -263,7 +268,7 @@
             </tr>
         </table>
 
-        <!-- 第五部分：签字栏 (带日期) -->
+        <!-- 第五部分：签字栏 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 25%">
@@ -278,20 +283,16 @@
                 <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
             </tr>
             <tr>
-                <!-- 制单人：固定名字，自动日期 -->
                 <td class="sign-cell">
                     <span class="sign-name-text">邹丽</span>
                     <div class="sign-date-box">日期：<span id="maker_date"></span></div>
                 </td>
-                <!-- 审核：留白，手工填写日期 -->
                 <td class="sign-cell">
                     <div class="sign-date-box">日期：__________</div>
                 </td>
-                <!-- 复核：留白，手工填写日期 -->
                 <td class="sign-cell">
                     <div class="sign-date-box">日期：__________</div>
                 </td>
-                <!-- 采购：留白，手工填写日期 -->
                 <td class="sign-cell">
                     <div class="sign-date-box">日期：__________</div>
                 </td>
@@ -301,8 +302,8 @@
     </div>
 
     <!-- 打印按钮 -->
-    <div class="no-print" style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
-        <button onclick="window.print()" style="padding: 15px 50px; background: #07c160; color: white; border: none; font-size: 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+    <div class="no-print" style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+        <button onclick="window.print()" style="padding: 10px 30px; background: #07c160; color: white; border: none; font-size: 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
         </button>
     </div>
@@ -319,20 +320,22 @@
         // 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
         
+        // 注意：这里 order_id 现在是 订单编号
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
+        
+        // 新增：contract_no 合同编号
+        document.getElementById('contract_no').innerText = getQueryParam('contract_no');
 
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
         document.getElementById('material').innerText = getQueryParam('material');
         document.getElementById('standard').innerText = getQueryParam('standard');
         document.getElementById('qty').innerText = getQueryParam('qty');
-        
-        // 日期处理
-        document.getElementById('date_order').innerText = getQueryParam('date_order'); // 订单日期
-        document.getElementById('date_due').innerText = getQueryParam('date_due');     // 交货日期
+        document.getElementById('date_order').innerText = getQueryParam('date_order');
+        document.getElementById('date_due').innerText = getQueryParam('date_due');
 
-        // 制单人自动填充当天日期
+        // 制单人日期
         var today = new Date();
         var dateStr = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0');
         document.getElementById('maker_date').innerText = dateStr;
