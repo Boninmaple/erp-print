@@ -5,7 +5,7 @@
     <title>生产流程工艺卡</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* 全局复位 */
+        /* 1. 全局复位 */
         * { box-sizing: border-box; }
         body { 
             font-family: "SimHei", "黑体", sans-serif; 
@@ -16,60 +16,64 @@
             font-size: 15px; 
         }
 
-        /* 打印容器 */
+        /* 2. 打印容器 */
         .sheet-container {
             max-width: 210mm;
             margin: 0 auto;
             position: relative;
         }
 
-        /* 头部区域 */
+        /* 3. 头部区域：确保文字居中，Logo绝对定位 */
         .header {
-            text-align: center;
+            text-align: center;      /* 关键：让内部行内元素（如文字）居中 */
             margin-bottom: 15px;
-            position: relative;
+            position: relative;      /* 关键：作为绝对定位的父级 */
             padding-top: 10px;
             min-height: 80px;
+            width: 100%;
         }
 
-        /* Logo */
+        /* Logo位置：左上角绝对定位，不占文档流，不影响文字居中 */
         .logo-box {
             position: absolute;
             top: 0;
             left: 0;
             z-index: 10;
         }
+        
         .logo-img {
-            height: 55px; 
+            height: 55px; /* 高度约1.5cm */
             width: auto;
             display: block;
         }
 
-        /* 标题 */
+        /* 公司标题：作为块级元素，左右margin自动即可居中，或者依赖父级text-align */
         .company-title {
             font-size: 26px;
             font-weight: bold;
             letter-spacing: 2px;
-            margin: 0;
-            margin-bottom: 8px;
+            margin: 0 auto 8px auto; /* 上 左右(自动) 下 */
             position: relative;
             z-index: 1;
-            padding: 0 80px; 
+            /* 增加内边距防止极个别情况文字太长碰到Logo */
+            padding: 0 100px; 
         }
+        
         .card-name {
             font-size: 20px;
             font-weight: bold;
             letter-spacing: 5px;
+            margin: 0 auto;
         }
 
-        /* 二维码 */
+        /* 二维码位置：右上角绝对定位 */
         #qrcode {
             position: absolute;
             top: 0;
             right: 0;
         }
 
-        /* 表格样式 */
+        /* 4. 表格样式 */
         .grid-table {
             width: 100%;
             border-collapse: collapse;
@@ -95,8 +99,9 @@
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-remarks { height: 60px; }
-        .h-sign { height: 60px; }
+        .h-sign { height: 60px; } /* 签字栏高度 */
 
+        /* 5. 打印适配 */
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; margin: 0; }
@@ -107,17 +112,23 @@
 <body>
 
     <div class="sheet-container">
-        <!-- 头部 -->
-        .header {
+        <!-- 头部区域 -->
+        <div class="header">
+            <!-- 左侧 Logo -->
             <div class="logo-box">
+                <!-- 记得确保 logo.jpg 在同级目录下 -->
                 <img src="logo.jpg" alt="Logo" class="logo-img">
             </div>
+
+            <!-- 中间 标题文字 -->
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
-            <div id="qrcode" title="扫码查看电子档"></div>
+
+            <!-- 右侧 二维码 -->
+            <div id="qrcode"></div>
         </div>
 
-        <!-- 1. 基础信息 -->
+        <!-- 第一部分：基础信息 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -155,7 +166,7 @@
             </tr>
         </table>
 
-        <!-- 2. 工序 -->
+        <!-- 第二部分：工序流程 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%"> 
@@ -193,7 +204,7 @@
             </tbody>
         </table>
 
-        <!-- 3. 技术要求 -->
+        <!-- 第三部分：技术要求 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -216,7 +227,7 @@
             </tr>
         </table>
 
-        <!-- 4. 备注 -->
+        <!-- 第四部分：备注 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -228,7 +239,7 @@
             </tr>
         </table>
 
-        <!-- 5. 签字 -->
+        <!-- 第五部分：签字栏 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 25%">
@@ -238,8 +249,8 @@
             </colgroup>
             <tr class="bg-gray h-35">
                 <td>制单人</td>
-                <td>制单审核</td>
-                <td>生产复核</td>
+                <td>生产审核</td>
+                <td>车间主任复核</td>
                 <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
             </tr>
             <tr class="h-sign">
@@ -249,29 +260,26 @@
                 <td></td>
             </tr>
         </table>
+
     </div>
 
-    <!-- 打印按钮 -->
+    <!-- 打印按钮区 -->
     <div class="no-print" style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
         <button onclick="window.print()" style="padding: 15px 50px; background: #07c160; color: white; border: none; font-size: 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
         </button>
-        <div style="margin-top: 10px; color: #555;">
-            提示：如需扫码跳转，请在代码底部配置链接前缀。
+        <div style="margin-top: 10px; color: #666; font-size: 14px;">
+            提示：如二维码无法跳转，请检查 logo.jpg 是否存在或网络是否通畅。
         </div>
     </div>
 
     <script>
         // ==========================================
-        // 【重要】请在这里配置您的企业微信链接前缀
+        //  配置区：已为您填入企业微信表格链接
         // ==========================================
         
-        // 举例：如果您的订单链接是 https://xx.com/detail?id=12345
-        // 那么前缀就是：https://xx.com/detail?id=
-        
-        var wecomUrlPrefix = "";  // <--- 请将您的链接前缀粘贴在双引号中间！！
+        var wecomUrlPrefix = "https://doc.weixin.qq.com/smartsheet/s3_AcoA1wY-AP4CNLMKQgwD0QN2TgI3S?scode=ADsAOgfBAHMRPk2ktqAcoA1wY-AP4&tab=JUjipj&viewId=v03Zb2";
 
-        // 如果您不填上面的内容，默认扫码还是只显示订单号
         // ==========================================
 
         function getQueryParam(name) {
@@ -279,6 +287,7 @@
             return urlParams.get(name) || "";
         }
 
+        // 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
         
         const orderId = getQueryParam('order_id');
@@ -296,10 +305,18 @@
             document.getElementById('cust_req').innerText = req;
         }
 
-        // 生成二维码逻辑
+        // 生成二维码
         if(orderId) {
-            // 如果您填了前缀，就拼成完整链接；没填就只放订单号
-            var qrContent = wecomUrlPrefix https://doc.weixin.qq.com/smartsheet/s3_AcoA1wY-AP4CNLMKQgwD0QN2TgI3S?scode=ADsAOgfBAHMxNJi8dfAcoA1wY-AP4&tab=JUjipj&viewId=vqFuDp? (wecomUrlPrefix + orderId) : orderId;
+            var qrContent = "";
+            
+            // 智能拼接逻辑：避免破坏原有的参数
+            if (wecomUrlPrefix.indexOf('?') > -1) {
+                // 如果链接里已经有问号（比如您的链接），用 & 连接
+                // 尝试用 'keyword' 参数传值，这通常是搜索关键字
+                qrContent = wecomUrlPrefix + "&keyword=" + orderId;
+            } else {
+                qrContent = wecomUrlPrefix + "?keyword=" + orderId;
+            }
 
             new QRCode(document.getElementById("qrcode"), {
                 text: qrContent,
