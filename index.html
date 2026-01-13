@@ -23,31 +23,30 @@
             position: relative;
         }
 
-        /* 3. 头部区域：高度增加以适应大二维码 */
+        /* 3. 头部区域 */
         .header {
             text-align: center;
             margin-bottom: 10px;
             position: relative;
-            padding-top: 25px; /* 增加顶部留白，让标题下沉一点，与左右元素协调 */
-            min-height: 120px; /* 增高头部，给二维码留空间 */
+            padding-top: 25px;
+            min-height: 120px;
             width: 100%;
         }
 
-        /* Logo位置：左上角 */
+        /* Logo */
         .logo-box {
             position: absolute;
-            top: 20px; /* 稍微往下一点，居中对齐感更好 */
+            top: 20px;
             left: 0;
             z-index: 10;
         }
-        
         .logo-img {
             height: 55px; 
             width: auto;
             display: block;
         }
 
-        /* 公司标题 */
+        /* 标题 */
         .company-title {
             font-size: 26px;
             font-weight: bold;
@@ -55,9 +54,8 @@
             margin: 0 auto 8px auto;
             position: relative;
             z-index: 1;
-            padding: 0 120px; /* 增加避让距离 */
+            padding: 0 120px; 
         }
-        
         .card-name {
             font-size: 20px;
             font-weight: bold;
@@ -65,10 +63,10 @@
             margin: 0 auto;
         }
 
-        /* 二维码位置：右上角 */
+        /* 二维码 */
         #qrcode {
             position: absolute;
-            top: 5px; /* 靠上 */
+            top: 5px;
             right: 0;
         }
 
@@ -98,7 +96,28 @@
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-remarks { height: 60px; }
-        .h-sign { height: 60px; }
+        
+        /* 签字栏特定样式 */
+        .sign-cell {
+            height: 70px; /* 稍微增高给日期留空间 */
+            vertical-align: top !important;
+            position: relative;
+            padding-top: 10px !important;
+        }
+        .sign-date-box {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+        }
+        .sign-name-text {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+        }
 
         /* 5. 打印适配 */
         @media print {
@@ -113,20 +132,15 @@
     <div class="sheet-container">
         <!-- 头部区域 -->
         <div class="header">
-            <!-- 左侧 Logo -->
             <div class="logo-box">
                 <img src="logo.jpg" alt="Logo" class="logo-img">
             </div>
-
-            <!-- 中间 标题文字 -->
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
-
-            <!-- 右侧 二维码 -->
             <div id="qrcode"></div>
         </div>
 
-        <!-- 第一部分：基础信息 -->
+        <!-- 第一部分：基础信息 (按新顺序排列) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -134,30 +148,42 @@
                 <col style="width: 15%">
                 <col style="width: 35%">
             </colgroup>
+            <!-- 1. 顾客 & 合同 -->
             <tr class="h-35">
-                <td class="bg-gray">顾客名称</td>
+                <td class="bg-gray">客户名称</td>
                 <td id="client_name"></td>
-                <td class="bg-gray">合同编号</td>
+                <td class="bg-gray">订单编号</td>
                 <td id="order_id"></td>
             </tr>
+            <!-- 2. 产品 & 规格 -->
             <tr class="h-35">
                 <td class="bg-gray">产品名称</td>
                 <td id="prod_name"></td>
                 <td class="bg-gray">规格型号</td>
                 <td id="spec"></td>
             </tr>
+            <!-- 3. 材质 & 制造标准 -->
             <tr class="h-35">
                 <td class="bg-gray">材&nbsp;&nbsp;&nbsp;&nbsp;质</td>
                 <td id="material"></td>
-                <td class="bg-gray">交货日期</td>
-                <td id="date_due"></td>
-            </tr>
-            <tr class="h-35">
-                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
-                <td id="qty"></td>
                 <td class="bg-gray">制造标准</td>
                 <td id="standard"></td>
             </tr>
+            <!-- 4. 数量 (单独一行) -->
+            <tr class="h-35">
+                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
+                <td id="qty"></td>
+                <td class="bg-gray"></td> <!-- 留空 -->
+                <td></td> <!-- 留空 -->
+            </tr>
+            <!-- 5. 订单日期 & 交货日期 (同行) -->
+            <tr class="h-35">
+                <td class="bg-gray">订单日期</td>
+                <td id="date_order"></td>
+                <td class="bg-gray">交货日期</td>
+                <td id="date_due"></td>
+            </tr>
+            <!-- 6. 材料编号 (整行) -->
             <tr class="h-35">
                 <td class="bg-gray">材料编号</td>
                 <td colspan="3" class="text-left"></td>
@@ -237,7 +263,7 @@
             </tr>
         </table>
 
-        <!-- 第五部分：签字栏 -->
+        <!-- 第五部分：签字栏 (带日期) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 25%">
@@ -247,21 +273,34 @@
             </colgroup>
             <tr class="bg-gray h-35">
                 <td>制单人</td>
-                <td>制单审核</td>
+                <td>工艺审核</td>
                 <td>生产复核</td>
                 <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
             </tr>
-            <tr class="h-sign">
-                <td style="font-size: 18px; font-weight: bold;">邹丽</td>
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr>
+                <!-- 制单人：固定名字，自动日期 -->
+                <td class="sign-cell">
+                    <span class="sign-name-text">邹丽</span>
+                    <div class="sign-date-box">日期：<span id="maker_date"></span></div>
+                </td>
+                <!-- 审核：留白，手工填写日期 -->
+                <td class="sign-cell">
+                    <div class="sign-date-box">日期：__________</div>
+                </td>
+                <!-- 复核：留白，手工填写日期 -->
+                <td class="sign-cell">
+                    <div class="sign-date-box">日期：__________</div>
+                </td>
+                <!-- 采购：留白，手工填写日期 -->
+                <td class="sign-cell">
+                    <div class="sign-date-box">日期：__________</div>
+                </td>
             </tr>
         </table>
 
     </div>
 
-    <!-- 打印按钮区 -->
+    <!-- 打印按钮 -->
     <div class="no-print" style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
         <button onclick="window.print()" style="padding: 15px 50px; background: #07c160; color: white; border: none; font-size: 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
@@ -279,21 +318,32 @@
 
         // 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
+        
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
+
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
         document.getElementById('material').innerText = getQueryParam('material');
-        document.getElementById('date_due').innerText = getQueryParam('date_due');
-        document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('standard').innerText = getQueryParam('standard');
+        document.getElementById('qty').innerText = getQueryParam('qty');
         
+        // 日期处理
+        document.getElementById('date_order').innerText = getQueryParam('date_order'); // 订单日期
+        document.getElementById('date_due').innerText = getQueryParam('date_due');     // 交货日期
+
+        // 制单人自动填充当天日期
+        var today = new Date();
+        var dateStr = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0');
+        document.getElementById('maker_date').innerText = dateStr;
+        
+        // 备注
         const req = getQueryParam('cust_req');
         if(req) {
             document.getElementById('cust_req').innerText = req;
         }
 
-        // 生成二维码
+        // 二维码
         if(orderId) {
             var qrContent = "";
             if (wecomUrlPrefix.indexOf('?') > -1) {
@@ -302,7 +352,6 @@
                 qrContent = wecomUrlPrefix + "?keyword=" + orderId;
             }
 
-            // 【关键修改】尺寸增加到 110，容错率设为 M (中等)，这样二维码点会大很多
             new QRCode(document.getElementById("qrcode"), {
                 text: qrContent,
                 width: 110,
