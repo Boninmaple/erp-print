@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>生产流程工艺卡</title>
-    <!-- QR Code Library -->
+    <!-- 引入二维码库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* Global Reset */
+        /* 全局复位 */
         * { box-sizing: border-box; }
         body { 
             font-family: "SimHei", "黑体", sans-serif; 
@@ -14,17 +14,17 @@
             padding: 20px; 
             background: white;
             color: black;
-            font-size: 15px; /* Adjusted for readability */
+            font-size: 15px; 
         }
 
-        /* Print Container (A4 Width) */
+        /* 打印容器：A4宽度 */
         .sheet-container {
             max-width: 210mm;
             margin: 0 auto;
             position: relative;
         }
 
-        /* Header Section */
+        /* 头部区域 */
         .header {
             text-align: center;
             margin-bottom: 15px;
@@ -32,7 +32,7 @@
             padding-top: 10px;
         }
 
-        /* Logo Simulation (Top Left) */
+        /* Logo位置：左上角绝对定位 */
         .logo-box {
             position: absolute;
             top: 0;
@@ -40,22 +40,15 @@
             display: flex;
             align-items: center;
         }
-        .logo-symbol {
-            font-size: 36px;
-            font-weight: 900;
-            margin-right: 8px;
-            font-family: serif;
+        
+        /* Logo图片样式 */
+        .logo-img {
+            height: 55px; /* 高度控制，约1.5-2cm高，保持比例 */
+            width: auto;
+            display: block;
         }
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            line-height: 1.1;
-        }
-        .logo-cn { font-size: 14px; font-weight: bold; }
-        .logo-en { font-size: 10px; letter-spacing: 1px; }
 
-        /* Company Title */
+        /* 公司标题 */
         .company-title {
             font-size: 26px;
             font-weight: bold;
@@ -69,20 +62,20 @@
             letter-spacing: 5px;
         }
 
-        /* QR Code (Top Right) */
+        /* 二维码位置：右上角 */
         #qrcode {
             position: absolute;
             top: 0;
             right: 0;
         }
 
-        /* Tables */
+        /* 表格通用样式 */
         .grid-table {
             width: 100%;
             border-collapse: collapse;
             border-spacing: 0;
             border: 1px solid black;
-            margin-bottom: -1px; /* Collapse borders between stacked tables */
+            margin-bottom: -1px; /* 消除表格之间的双重边框 */
             table-layout: fixed;
         }
 
@@ -94,18 +87,18 @@
             font-weight: normal;
         }
 
-        /* Header Cells (Gray Background) */
+        /* 表头灰底 */
         .bg-gray {
             background-color: #f0f0f0;
             font-weight: bold;
         }
 
-        /* Helper classes */
+        /* 辅助类 */
         .text-left { text-align: left !important; padding-left: 8px !important; }
-        .h-35 { height: 35px; } /* Fixed row height for consistency */
+        .h-35 { height: 35px; } /* 固定行高 */
         .h-remarks { height: 60px; }
 
-        /* Print Settings */
+        /* 打印适配 */
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; margin: 0; }
@@ -116,25 +109,21 @@
 <body>
 
     <div class="sheet-container">
-        <!-- Header -->
-        <div class="header">
-            <!-- Simulated Logo -->
+        <!-- 头部：包含Logo、标题、二维码 -->
+        .header {
             <div class="logo-box">
-                <span class="logo-symbol">B</span>
-                <div class="logo-text">
-                    <span class="logo-cn">博江管件</span>
-                    <span class="logo-en">BOJIANG</span>
-                </div>
+                <!-- 请确保将Logo图片重命名为 logo.jpg 并放在同一目录下 -->
+                <img src="logo.jpg" alt="博江管件" class="logo-img">
             </div>
 
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
 
-            <!-- QR Code -->
+            <!-- 二维码 -->
             <div id="qrcode"></div>
         </div>
 
-        <!-- Section 1: Basic Info -->
+        <!-- 第一部分：基础信息 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -146,7 +135,7 @@
                 <td class="bg-gray">顾客名称</td>
                 <td id="client_name"></td>
                 <td class="bg-gray">合同编号</td>
-                <td id="order_id"></td> <!-- Mapped Order ID here -->
+                <td id="order_id"></td>
             </tr>
             <tr class="h-35">
                 <td class="bg-gray">产品名称</td>
@@ -172,16 +161,16 @@
             </tr>
         </table>
 
-        <!-- Section 2: Process Flow -->
+        <!-- 第二部分：工序流程 -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 15%"> <!-- Name -->
-                <col style="width: 10%"> <!-- Process -->
-                <col style="width: 10%"> <!-- Qty -->
-                <col style="width: 10%"> <!-- NC -->
-                <col style="width: 15%"> <!-- Handler -->
-                <col style="width: 15%"> <!-- Inspector -->
-                <col style="width: 25%"> <!-- Date -->
+                <col style="width: 15%"> <!-- 工序名称 -->
+                <col style="width: 10%"> <!-- 工序 -->
+                <col style="width: 10%"> <!-- 数量 -->
+                <col style="width: 10%"> <!-- 不合格 -->
+                <col style="width: 15%"> <!-- 经手人 -->
+                <col style="width: 15%"> <!-- 检查员 -->
+                <col style="width: 25%"> <!-- 日期 -->
             </colgroup>
             <thead>
                 <tr class="bg-gray h-35">
@@ -210,7 +199,7 @@
             </tbody>
         </table>
 
-        <!-- Section 3: Tech Requirements -->
+        <!-- 第三部分：技术要求 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -229,15 +218,15 @@
                 <td class="bg-gray">下料长度</td>
             </tr>
             <tr class="h-35">
-                <td></td> <!-- Value -->
-                <td></td> <!-- Value -->
-                <td></td> <!-- Value -->
-                <td></td> <!-- Value -->
-                <td></td> <!-- Value -->
+                <td></td> 
+                <td></td> 
+                <td></td> 
+                <td></td> 
+                <td></td> 
             </tr>
         </table>
 
-        <!-- Section 4: Remarks -->
+        <!-- 第四部分：备注 -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
@@ -246,33 +235,33 @@
             <tr>
                 <td class="bg-gray h-remarks">备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
                 <td class="text-left" style="vertical-align: top; padding: 5px;" id="cust_req">
-                    <!-- Remarks text will go here -->
+                    <!-- 备注内容 -->
                 </td>
             </tr>
         </table>
     </div>
 
-    <!-- Print Button (Hidden when printing) -->
+    <!-- 打印按钮 -->
     <div class="no-print" style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
         <button onclick="window.print()" style="padding: 15px 50px; background: #07c160; color: white; border: none; font-size: 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
         </button>
         <div style="margin-top: 10px; color: red; font-weight: bold;">
-            如未显示最新版，请按 Ctrl + F5 强制刷新
+            请确保 logo.jpg 已放入同一文件夹
         </div>
     </div>
 
     <script>
-        // 1. Get Params from URL
+        // 1. 获取URL参数
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name) || "";
         }
 
-        // 2. Populate Data
+        // 2. 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
         
-        // Use 'order_id' for Contract No
+        // 订单号/合同号
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
 
@@ -283,13 +272,13 @@
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('standard').innerText = getQueryParam('standard');
 
-        // Remarks
+        // 备注
         const req = getQueryParam('cust_req');
         if(req) {
             document.getElementById('cust_req').innerText = req;
         }
 
-        // 3. Generate QR Code
+        // 3. 生成二维码
         if(orderId) {
             new QRCode(document.getElementById("qrcode"), {
                 text: orderId,
