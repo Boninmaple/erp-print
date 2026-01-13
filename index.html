@@ -23,40 +23,39 @@
             position: relative;
         }
 
-        /* 3. 头部区域：确保文字居中，Logo绝对定位 */
+        /* 3. 头部区域：高度增加以适应大二维码 */
         .header {
-            text-align: center;      /* 关键：让内部行内元素（如文字）居中 */
-            margin-bottom: 15px;
-            position: relative;      /* 关键：作为绝对定位的父级 */
-            padding-top: 10px;
-            min-height: 80px;
+            text-align: center;
+            margin-bottom: 10px;
+            position: relative;
+            padding-top: 25px; /* 增加顶部留白，让标题下沉一点，与左右元素协调 */
+            min-height: 120px; /* 增高头部，给二维码留空间 */
             width: 100%;
         }
 
-        /* Logo位置：左上角绝对定位，不占文档流，不影响文字居中 */
+        /* Logo位置：左上角 */
         .logo-box {
             position: absolute;
-            top: 0;
+            top: 20px; /* 稍微往下一点，居中对齐感更好 */
             left: 0;
             z-index: 10;
         }
         
         .logo-img {
-            height: 55px; /* 高度约1.5cm */
+            height: 55px; 
             width: auto;
             display: block;
         }
 
-        /* 公司标题：作为块级元素，左右margin自动即可居中，或者依赖父级text-align */
+        /* 公司标题 */
         .company-title {
             font-size: 26px;
             font-weight: bold;
             letter-spacing: 2px;
-            margin: 0 auto 8px auto; /* 上 左右(自动) 下 */
+            margin: 0 auto 8px auto;
             position: relative;
             z-index: 1;
-            /* 增加内边距防止极个别情况文字太长碰到Logo */
-            padding: 0 100px; 
+            padding: 0 120px; /* 增加避让距离 */
         }
         
         .card-name {
@@ -66,10 +65,10 @@
             margin: 0 auto;
         }
 
-        /* 二维码位置：右上角绝对定位 */
+        /* 二维码位置：右上角 */
         #qrcode {
             position: absolute;
-            top: 0;
+            top: 5px; /* 靠上 */
             right: 0;
         }
 
@@ -99,7 +98,7 @@
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-remarks { height: 60px; }
-        .h-sign { height: 60px; } /* 签字栏高度 */
+        .h-sign { height: 60px; }
 
         /* 5. 打印适配 */
         @media print {
@@ -116,7 +115,6 @@
         <div class="header">
             <!-- 左侧 Logo -->
             <div class="logo-box">
-                <!-- 记得确保 logo.jpg 在同级目录下 -->
                 <img src="logo.jpg" alt="Logo" class="logo-img">
             </div>
 
@@ -249,8 +247,8 @@
             </colgroup>
             <tr class="bg-gray h-35">
                 <td>制单人</td>
-                <td>生产审核</td>
-                <td>车间主任复核</td>
+                <td>制单审核</td>
+                <td>生产复核</td>
                 <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
             </tr>
             <tr class="h-sign">
@@ -268,19 +266,11 @@
         <button onclick="window.print()" style="padding: 15px 50px; background: #07c160; color: white; border: none; font-size: 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
         </button>
-        <div style="margin-top: 10px; color: #666; font-size: 14px;">
-            提示：如二维码无法跳转，请检查 logo.jpg 是否存在或网络是否通畅。
-        </div>
     </div>
 
     <script>
-        // ==========================================
-        //  配置区：已为您填入企业微信表格链接
-        // ==========================================
-        
+        // 配置链接
         var wecomUrlPrefix = "https://doc.weixin.qq.com/smartsheet/s3_AcoA1wY-AP4CNLMKQgwD0QN2TgI3S?scode=ADsAOgfBAHMRPk2ktqAcoA1wY-AP4&tab=JUjipj&viewId=v03Zb2";
-
-        // ==========================================
 
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -289,10 +279,8 @@
 
         // 填充数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
-        
         const orderId = getQueryParam('order_id');
         document.getElementById('order_id').innerText = orderId;
-
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
         document.getElementById('material').innerText = getQueryParam('material');
@@ -308,21 +296,18 @@
         // 生成二维码
         if(orderId) {
             var qrContent = "";
-            
-            // 智能拼接逻辑：避免破坏原有的参数
             if (wecomUrlPrefix.indexOf('?') > -1) {
-                // 如果链接里已经有问号（比如您的链接），用 & 连接
-                // 尝试用 'keyword' 参数传值，这通常是搜索关键字
                 qrContent = wecomUrlPrefix + "&keyword=" + orderId;
             } else {
                 qrContent = wecomUrlPrefix + "?keyword=" + orderId;
             }
 
+            // 【关键修改】尺寸增加到 110，容错率设为 M (中等)，这样二维码点会大很多
             new QRCode(document.getElementById("qrcode"), {
                 text: qrContent,
-                width: 70,
-                height: 70,
-                correctLevel : QRCode.CorrectLevel.H
+                width: 110,
+                height: 110,
+                correctLevel : QRCode.CorrectLevel.M
             });
         }
     </script>
