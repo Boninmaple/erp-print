@@ -361,22 +361,6 @@
             document.getElementById('stock_tag').style.display = 'block';
         }
 
-        // 二维码
-        if(orderId) {
-            var qrContent = "";
-            if (wecomUrlPrefix.indexOf('?') > -1) {
-                qrContent = wecomUrlPrefix + "&keyword=" + orderId;
-            } else {
-                qrContent = wecomUrlPrefix + "?keyword=" + orderId;
-            }
-
-            new QRCode(document.getElementById("qrcode"), {
-                text: qrContent,
-                width: 110,
-                height: 110,
-                correctLevel : QRCode.CorrectLevel.M
-            });
-        }
     </script>
 </body>
 </html>
