@@ -266,7 +266,7 @@
                 <td class="bg-gray">下料长度</td>
             </tr>
             <tr class="h-35">
-                <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+                <td id="tech_height"></td> <td id="tech_disk_size"></td> <td></td> <td></td> <td></td> <td></td>
             </tr>
         </table>
 
@@ -343,6 +343,8 @@
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('date_order').innerText = getQueryParam('date_order');
         document.getElementById('date_due').innerText = getQueryParam('date_due');
+        document.getElementById('tech_height').innerText = getQueryParam('height');
+        document.getElementById('tech_disk_size').innerText = getQueryParam('disk_size');
 
         // 制单人日期
         var today = new Date();
@@ -359,23 +361,6 @@
         const stockStatus = getQueryParam('stock_status');
         if (stockStatus && (stockStatus.indexOf('有') > -1)) {
             document.getElementById('stock_tag').style.display = 'block';
-        }
-
-        // 二维码
-        if(orderId) {
-            var qrContent = "";
-            if (wecomUrlPrefix.indexOf('?') > -1) {
-                qrContent = wecomUrlPrefix + "&keyword=" + orderId;
-            } else {
-                qrContent = wecomUrlPrefix + "?keyword=" + orderId;
-            }
-
-            new QRCode(document.getElementById("qrcode"), {
-                text: qrContent,
-                width: 110,
-                height: 110,
-                correctLevel : QRCode.CorrectLevel.M
-            });
         }
     </script>
 </body>
