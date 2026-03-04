@@ -153,8 +153,8 @@
             <div class="logo-box">
                 <img src="logo.jpg" alt="Logo" class="logo-img">
                 
-                <!-- 修改：去掉了星号，只有文字 -->
-                <div id="stock_tag" class="stock-tag">有 现 货</div>
+                <!-- 动态标签，内容留空由后面的脚本填充 -->
+         <div id="stock_tag" class="stock-tag"></div>
             </div>
 
             <h1 class="company-title">温州博江管件有限公司</h1>
@@ -357,11 +357,13 @@
             document.getElementById('cust_req').innerText = req;
         }
 
-        // 库存状态判断：只要字段里有“有”字，就显示“有 现 货”
-        const stockStatus = getQueryParam('stock_status');
-        if (stockStatus && (stockStatus.indexOf('有') > -1)) {
-            document.getElementById('stock_tag').style.display = 'block';
-        }
+       // 库存状态判断：只要企微表格中对应的字段有文字，就动态显示该文字
+const stockStatus = getQueryParam('stock_status');
+if (stockStatus && stockStatus.trim() !== '') {
+    const stockTag = document.getElementById('stock_tag');
+    stockTag.innerText = stockStatus; // 将标签文字替换为表格传过来的真实文字
+    stockTag.style.display = 'block'; // 将标签显示出来
+}
     </script>
 </body>
 </html>
