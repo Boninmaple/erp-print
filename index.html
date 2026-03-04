@@ -5,6 +5,7 @@
     <title>生产流程工艺卡</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
+        /* 1. 全局复位 */
         * { box-sizing: border-box; }
         body { 
             font-family: "SimHei", "黑体", sans-serif; 
@@ -14,11 +15,13 @@
             color: black;
             font-size: 15px; 
         }
+        /* 2. 打印容器 */
         .sheet-container {
             max-width: 210mm;
             margin: 0 auto;
             position: relative;
         }
+        /* 3. 头部区域 */
         .header {
             text-align: center;
             margin-bottom: 10px;
@@ -27,6 +30,7 @@
             min-height: 120px;
             width: 100%;
         }
+        /* Logo */
         .logo-box {
             position: absolute;
             top: 20px;
@@ -36,34 +40,93 @@
             flex-direction: column;
             align-items: center; 
         }
-        .logo-img { height: 55px; width: auto; display: block; }
+        .logo-img {
+            height: 55px; 
+            width: auto;
+            display: block;
+        }
+        /* 库存状态标记 */
         .stock-tag {
-            margin-top: 10px; font-size: 18px; font-weight: 900;      
-            border: 3px solid black; padding: 2px 8px; border-radius: 4px;
-            display: none; white-space: nowrap; background-color: #fff; letter-spacing: 2px;   
+            margin-top: 10px;      
+            font-size: 18px;       
+            font-weight: 900;      
+            border: 3px solid black; 
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: none;         
+            white-space: nowrap;   
+            background-color: #fff;
+            letter-spacing: 2px;   
         }
+        /* 标题 */
         .company-title {
-            font-size: 26px; font-weight: bold; letter-spacing: 2px;
-            margin: 0 auto 8px auto; position: relative; z-index: 1; padding: 0 120px; 
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 0 auto 8px auto;
+            position: relative;
+            z-index: 1;
+            padding: 0 120px; 
         }
-        .card-name { font-size: 20px; font-weight: bold; letter-spacing: 5px; margin: 0 auto; }
-        #qrcode { position: absolute; top: 5px; right: 0; }
+        .card-name {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 0 auto;
+        }
+        /* 二维码 */
+        #qrcode {
+            position: absolute;
+            top: 5px;
+            right: 0;
+        }
+        /* 4. 表格样式 */
         .grid-table {
-            width: 100%; border-collapse: collapse; border-spacing: 0;
-            border: 1px solid black; margin-bottom: -1px; table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 1px solid black;
+            margin-bottom: -1px; 
+            table-layout: fixed;
         }
         .grid-table th, .grid-table td {
-            border: 1px solid black; padding: 2px 2px; text-align: center;
-            vertical-align: middle; font-weight: normal;
+            border: 1px solid black;
+            padding: 2px 2px; 
+            text-align: center;
+            vertical-align: middle;
+            font-weight: normal;
         }
-        .bg-gray { background-color: #f0f0f0; font-weight: bold; }
+        .bg-gray {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-30 { height: 28px; } 
         .h-remarks { height: 50px; } 
-        .sign-cell { height: 60px; vertical-align: top !important; position: relative; padding-top: 5px !important; }
-        .sign-date-box { position: absolute; bottom: 5px; left: 0; width: 100%; text-align: center; font-size: 12px; color: #333; }
-        .sign-name-text { font-size: 18px; font-weight: bold; display: block; }
+        
+        /* 签字栏 */
+        .sign-cell {
+            height: 60px; 
+            vertical-align: top !important;
+            position: relative;
+            padding-top: 5px !important;
+        }
+        .sign-date-box {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+        }
+        .sign-name-text {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+        }
+        /* 5. 打印适配 */
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; margin: 0; }
@@ -86,40 +149,69 @@
 
         <!-- 第一部分：基础信息 -->
         <table class="grid-table">
-            <colgroup><col style="width: 15%"><col style="width: 35%"><col style="width: 15%"><col style="width: 35%"></colgroup>
+            <colgroup>
+                <col style="width: 15%">
+                <col style="width: 35%">
+                <col style="width: 15%">
+                <col style="width: 35%">
+            </colgroup>
             <tr class="h-35">
-                <td class="bg-gray">客户名称</td><td id="client_name"></td>
-                <td class="bg-gray">订单编号</td><td id="order_id"></td>
+                <td class="bg-gray">客户名称</td>
+                <td id="client_name"></td>
+                <td class="bg-gray">订单编号</td>
+                <td id="order_id"></td>
             </tr>
             <tr class="h-35">
-                <td class="bg-gray">产品名称</td><td id="prod_name"></td>
-                <td class="bg-gray">合同编号</td><td id="contract_no"></td>
+                <td class="bg-gray">产品名称</td>
+                <td id="prod_name"></td>
+                <td class="bg-gray">合同编号</td>
+                <td id="contract_no"></td>
             </tr>
             <tr class="h-35">
-                <td class="bg-gray">规格型号</td><td id="spec"></td>
-                <td class="bg-gray">材&nbsp;&nbsp;&nbsp;&nbsp;质</td><td id="material"></td>
+                <td class="bg-gray">规格型号</td>
+                <td id="spec"></td>
+                <td class="bg-gray">材&nbsp;&nbsp;&nbsp;&nbsp;质</td>
+                <td id="material"></td>
             </tr>
             <tr class="h-35">
-                <td class="bg-gray">制造标准</td><td id="standard"></td>
-                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td><td id="qty"></td>
+                <td class="bg-gray">制造标准</td>
+                <td id="standard"></td>
+                <td class="bg-gray">数&nbsp;&nbsp;&nbsp;&nbsp;量</td>
+                <td id="qty"></td>
             </tr>
             <tr class="h-35">
-                <td class="bg-gray">订单日期</td><td id="date_order"></td>
-                <td class="bg-gray">交货日期</td><td id="date_due"></td>
+                <td class="bg-gray">订单日期</td>
+                <td id="date_order"></td>
+                <td class="bg-gray">交货日期</td>
+                <td id="date_due"></td>
             </tr>
             <tr class="h-35">
-                <td class="bg-gray">材料编号</td><td colspan="3" class="text-left"></td>
+                <td class="bg-gray">材料编号</td>
+                <td colspan="3" class="text-left"></td>
             </tr>
         </table>
 
-        <!-- 第二部分：工艺流程 -->
+        <!-- 第二部分：15道工序 -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 15%"><col style="width: 10%"><col style="width: 10%"><col style="width: 10%">
-                <col style="width: 15%"><col style="width: 15%"><col style="width: 25%">
+                <col style="width: 15%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 15%"> 
+                <col style="width: 15%"> 
+                <col style="width: 25%"> 
             </colgroup>
             <thead>
-                <tr class="bg-gray h-30"><td>工序名称</td><td>备注</td><td>数量</td><td>不合格</td><td>经手人</td><td>检查员</td><td>日期</td></tr>
+                <tr class="bg-gray h-30">
+                    <td>工序名称</td>
+                    <td>备注</td>
+                    <td>数量</td>
+                    <td>不合格</td>
+                    <td>经手人</td>
+                    <td>检查员</td>
+                    <td>日期</td>
+                </tr>
             </thead>
             <tbody>
                 <tr class="h-30"><td>下&nbsp;&nbsp;&nbsp;&nbsp;料</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -140,17 +232,16 @@
             </tbody>
         </table>
 
-        <!-- 第三部分：技术要求 (已优化，加入备注、R角、内孔) -->
+        <!-- 第三部分：技术要求 (已同步 R角 和 内孔，去掉了技术备注) -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 13%">
-                <col style="width: 12%">
-                <col style="width: 12%">
-                <col style="width: 12%">
-                <col style="width: 12%">
                 <col style="width: 15%">
-                <col style="width: 12%">
-                <col style="width: 12%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 15%">
             </colgroup>
             <tr class="h-30">
                 <td class="bg-gray">技术要求</td>
@@ -158,7 +249,6 @@
                 <td class="bg-gray">盘大小</td>
                 <td class="bg-gray">R角</td>
                 <td class="bg-gray">内孔</td>
-                <td class="bg-gray">备注</td>
                 <td class="bg-gray">角度</td>
                 <td class="bg-gray">下料长度</td>
             </tr>
@@ -168,37 +258,50 @@
                 <td id="tech_disk_size"></td> 
                 <td id="tech_r_angle"></td> 
                 <td id="tech_inner_hole"></td> 
-                <td id="tech_remarks"></td> 
                 <td id="tech_angle"></td> 
                 <td id="tech_cut_length"></td>
             </tr>
         </table>
 
-        <!-- 第四部分：综合备注 -->
+        <!-- 第四部分：综合信息 -->
         <table class="grid-table">
-            <colgroup><col style="width: 15%"><col style="width: 85%"></colgroup>
+            <colgroup>
+                <col style="width: 15%">
+                <col style="width: 85%">
+            </colgroup>
             <tr>
                 <td class="bg-gray h-remarks">备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
                 <td class="text-left" style="vertical-align: top; padding: 5px;" id="cust_req"></td>
             </tr>
         </table>
 
-        <!-- 第五部分：签字栏 (修复斜线问题) -->
+        <!-- 第五部分：签字栏 (已清除斜线) -->
         <table class="grid-table">
-            <colgroup><col style="width: 25%"><col style="width: 25%"><col style="width: 25%"><col style="width: 25%"></colgroup>
-            <tr class="bg-gray h-35"><td>制单人</td><td>工艺审核</td><td>生产复核</td><td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td></tr>
+            <colgroup>
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+            </colgroup>
+            <tr class="bg-gray h-35">
+                <td>制单人</td>
+                <td>工艺审核</td>
+                <td>生产复核</td>
+                <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
+            </tr>
             <tr>
                 <td class="sign-cell">
                     <span class="sign-name-text">邹晓聪</span>
                     <div class="sign-date-box">日期：<span id="maker_date"></span></div>
                 </td>
-                <td class="sign-cell"><div class="sign-date-box">日期：____ / __ / __</div></td>
-                <td class="sign-cell"><div class="sign-date-box">日期：____ / __ / __</div></td>
-                <td class="sign-cell"><div class="sign-date-box">日期：____ / __ / __</div></td>
+                <td class="sign-cell"><div class="sign-date-box">日期：____-____-____</div></td>
+                <td class="sign-cell"><div class="sign-date-box">日期：____-____-____</div></td>
+                <td class="sign-cell"><div class="sign-date-box">日期：____-____-____</div></td>
             </tr>
         </table>
     </div>
 
+    <!-- 打印按钮 -->
     <div class="no-print" style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
         <button onclick="window.print()" style="padding: 10px 30px; background: #07c160; color: white; border: none; font-size: 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">
             🖨️ 打印流转卡
@@ -211,7 +314,7 @@
             return urlParams.get(name) || "";
         }
 
-        // 基础信息
+        // 填充基础数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
         document.getElementById('order_id').innerText = getQueryParam('order_id');
         document.getElementById('contract_no').innerText = getQueryParam('contract_no');
@@ -223,35 +326,39 @@
         document.getElementById('date_order').innerText = getQueryParam('date_order');
         document.getElementById('date_due').innerText = getQueryParam('date_due');
 
-        // 技术要求 (同步图片中的三项数据)
-        document.getElementById('tech_r_angle').innerText = getQueryParam('r_angle');    // 对应：R角
-        document.getElementById('tech_inner_hole').innerText = getQueryParam('inner_hole'); // 对应：内孔
-        
-        // 备注处理：尝试读取 remarks 或 cust_req，并同时填入技术备注和下方大备注框
-        const remarksVal = getQueryParam('remarks') || getQueryParam('cust_req');
-        document.getElementById('tech_remarks').innerText = remarksVal; // 同步到技术栏备注
-        document.getElementById('cust_req').innerText = remarksVal;     // 同步到下方备注
-
+        // 填充技术数据
         document.getElementById('tech_height').innerText = getQueryParam('height');
         document.getElementById('tech_disk_size').innerText = getQueryParam('disk_size');
-        document.getElementById('tech_angle').innerText = getQueryParam('angle'); 
-        document.getElementById('tech_cut_length').innerText = getQueryParam('cut_length'); 
+        document.getElementById('tech_r_angle').innerText = getQueryParam('r_angle');
+        document.getElementById('tech_inner_hole').innerText = getQueryParam('inner_hole');
+        document.getElementById('tech_angle').innerText = getQueryParam('angle');
+        document.getElementById('tech_cut_length').innerText = getQueryParam('cut_length');
 
-        // 日期
+        // 填充综合信息 (使用 cust_req 参数名同步)
+        const info = getQueryParam('cust_req');
+        if(info) {
+            document.getElementById('cust_req').innerText = info;
+        }
+
+        // 制单人日期
         var today = new Date();
         var dateStr = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0');
         document.getElementById('maker_date').innerText = dateStr;
 
         // 库存标签
-        const stockStatus = getQueryParam('stock_status');
-        if (stockStatus && stockStatus.trim() !== '') {
-            const stockTag = document.getElementById('stock_tag');
-            stockTag.innerText = stockStatus;
-            stockTag.style.display = 'block';
+        const status = getQueryParam('stock_status');
+        if (status && status.trim() !== '') {
+            const tag = document.getElementById('stock_tag');
+            tag.innerText = status;
+            tag.style.display = 'block';
         }
 
         // 生成二维码
-        new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 80, height: 80 });
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href,
+            width: 80,
+            height: 80
+        });
     </script>
 </body>
 </html>
