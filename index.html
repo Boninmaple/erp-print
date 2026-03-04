@@ -15,14 +15,12 @@
             color: black;
             font-size: 15px; 
         }
-
         /* 2. 打印容器 */
         .sheet-container {
             max-width: 210mm;
             margin: 0 auto;
             position: relative;
         }
-
         /* 3. 头部区域 */
         .header {
             text-align: center;
@@ -32,7 +30,6 @@
             min-height: 120px;
             width: 100%;
         }
-
         /* Logo */
         .logo-box {
             position: absolute;
@@ -48,21 +45,19 @@
             width: auto;
             display: block;
         }
-
-        /* --- 库存状态标记 (去掉了星号) --- */
+        /* 库存状态标记 */
         .stock-tag {
             margin-top: 10px;      
             font-size: 18px;       
-            font-weight: 900;      /* 特粗 */
-            border: 3px solid black; /* 粗边框 */
+            font-weight: 900;      
+            border: 3px solid black; 
             padding: 2px 8px;
             border-radius: 4px;
-            display: none;         /* 默认隐藏 */
+            display: none;         
             white-space: nowrap;   
             background-color: #fff;
-            letter-spacing: 2px;   /* 字间距稍微拉开一点点，好看 */
+            letter-spacing: 2px;   
         }
-
         /* 标题 */
         .company-title {
             font-size: 26px;
@@ -79,14 +74,12 @@
             letter-spacing: 5px;
             margin: 0 auto;
         }
-
         /* 二维码 */
         #qrcode {
             position: absolute;
             top: 5px;
             right: 0;
         }
-
         /* 4. 表格样式 */
         .grid-table {
             width: 100%;
@@ -96,7 +89,6 @@
             margin-bottom: -1px; 
             table-layout: fixed;
         }
-
         .grid-table th, .grid-table td {
             border: 1px solid black;
             padding: 2px 2px; 
@@ -104,12 +96,10 @@
             vertical-align: middle;
             font-weight: normal;
         }
-
         .bg-gray {
             background-color: #f0f0f0;
             font-weight: bold;
         }
-
         .text-left { text-align: left !important; padding-left: 8px !important; }
         .h-35 { height: 35px; } 
         .h-30 { height: 28px; } 
@@ -136,7 +126,6 @@
             font-weight: bold;
             display: block;
         }
-
         /* 5. 打印适配 */
         @media print {
             .no-print { display: none !important; }
@@ -146,17 +135,13 @@
     </style>
 </head>
 <body>
-
     <div class="sheet-container">
         <!-- 头部区域 -->
         <div class="header">
             <div class="logo-box">
                 <img src="logo.jpg" alt="Logo" class="logo-img">
-                
-                <!-- 动态标签，内容留空由后面的脚本填充 -->
-         <div id="stock_tag" class="stock-tag"></div>
+                <div id="stock_tag" class="stock-tag"></div>
             </div>
-
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
             <div id="qrcode"></div>
@@ -247,26 +232,34 @@
             </tbody>
         </table>
 
-        <!-- 第三部分：技术要求 -->
+        <!-- 第三部分：技术要求 (已修改，增加 R角 和 内孔) -->
         <table class="grid-table">
             <colgroup>
                 <col style="width: 15%">
-                <col style="width: 17%">
-                <col style="width: 17%">
-                <col style="width: 17%">
-                <col style="width: 17%">
-                <col style="width: 17%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 15%">
             </colgroup>
             <tr class="h-30">
                 <td class="bg-gray">技术要求</td>
                 <td class="bg-gray">高度</td>
                 <td class="bg-gray">盘大小</td>
-                <td class="bg-gray">R</td>
+                <td class="bg-gray">R角</td>
+                <td class="bg-gray">内孔</td>
                 <td class="bg-gray">角度</td>
                 <td class="bg-gray">下料长度</td>
             </tr>
             <tr class="h-35">
-                <td></td> <td id="tech_height"></td> <td id="tech_disk_size"></td> <td></td> <td></td> <td></td>
+                <td></td> 
+                <td id="tech_height"></td> 
+                <td id="tech_disk_size"></td> 
+                <td id="tech_r_angle"></td> 
+                <td id="tech_inner_hole"></td> 
+                <td id="tech_angle"></td> 
+                <td id="tech_cut_length"></td>
             </tr>
         </table>
 
@@ -301,18 +294,11 @@
                     <span class="sign-name-text">邹晓聪</span>
                     <div class="sign-date-box">日期：<span id="maker_date"></span></div>
                 </td>
-                <td class="sign-cell">
-                    <div class="sign-date-box">日期：__________</div>
-                </td>
-                <td class="sign-cell">
-                    <div class="sign-date-box">日期：__________</div>
-                </td>
-                <td class="sign-cell">
-                    <div class="sign-date-box">日期：__________</div>
-                </td>
+                <td class="sign-cell"><div class="sign-date-box">日期：\_________\_</div></td>
+                <td class="sign-cell"><div class="sign-date-box">日期：\_________\_</div></td>
+                <td class="sign-cell"><div class="sign-date-box">日期：\_________\_</div></td>
             </tr>
         </table>
-
     </div>
 
     <!-- 打印按钮 -->
@@ -323,18 +309,14 @@
     </div>
 
     <script>
-        // 配置链接
-        var wecomUrlPrefix = "https://doc.weixin.qq.com/smartsheet/s3_AcoA1wY-AP4CNLMKQgwD0QN2TgI3S?scode=ADsAOgfBAHMRPk2ktqAcoA1wY-AP4&tab=JUjipj&viewId=v03Zb2";
-
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name) || "";
         }
 
-        // 填充数据
+        // 填充基础数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
-        const orderId = getQueryParam('order_id');
-        document.getElementById('order_id').innerText = orderId;
+        document.getElementById('order_id').innerText = getQueryParam('order_id');
         document.getElementById('contract_no').innerText = getQueryParam('contract_no');
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
@@ -343,27 +325,41 @@
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('date_order').innerText = getQueryParam('date_order');
         document.getElementById('date_due').innerText = getQueryParam('date_due');
+
+        // 填充技术要求数据 (新增 R角、内孔)
         document.getElementById('tech_height').innerText = getQueryParam('height');
         document.getElementById('tech_disk_size').innerText = getQueryParam('disk_size');
+        document.getElementById('tech_r_angle').innerText = getQueryParam('r_angle');    // 对应企业微信字段：R角
+        document.getElementById('tech_inner_hole').innerText = getQueryParam('inner_hole'); // 对应企业微信字段：内孔
+        document.getElementById('tech_angle').innerText = getQueryParam('angle'); 
+        document.getElementById('tech_cut_length').innerText = getQueryParam('cut_length'); 
+
+        // 填充备注
+        const req = getQueryParam('cust_req'); // 对应企业微信字段：备注
+        if(req) {
+            document.getElementById('cust_req').innerText = req;
+        }
 
         // 制单人日期
         var today = new Date();
         var dateStr = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0');
         document.getElementById('maker_date').innerText = dateStr;
-        
-        // 备注
-        const req = getQueryParam('cust_req');
-        if(req) {
-            document.getElementById('cust_req').innerText = req;
+
+        // 库存状态标签
+        const stockStatus = getQueryParam('stock_status');
+        if (stockStatus && stockStatus.trim() !== '') {
+            const stockTag = document.getElementById('stock_tag');
+            stockTag.innerText = stockStatus;
+            stockTag.style.display = 'block';
         }
 
-       // 库存状态判断：只要企微表格中对应的字段有文字，就动态显示该文字
-const stockStatus = getQueryParam('stock_status');
-if (stockStatus && stockStatus.trim() !== '') {
-    const stockTag = document.getElementById('stock_tag');
-    stockTag.innerText = stockStatus; // 将标签文字替换为表格传过来的真实文字
-    stockTag.style.display = 'block'; // 将标签显示出来
-}
+        // 生成二维码 (可选，如不需要可删除)
+        const currentUrl = window.location.href;
+        new QRCode(document.getElementById("qrcode"), {
+            text: currentUrl,
+            width: 80,
+            height: 80
+        });
     </script>
 </body>
 </html>
