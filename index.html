@@ -361,7 +361,7 @@
         const formBaseUrl = "https://doc.weixin.qq.com/smartsheet/form/1_wpOzrBcwAAn6Iu-iVpkOBRmMkDNYUm3w_330712";
         
         // 3. 拼接参数，实现自动代入（注意：这里的"订单编号"必须和您表单里的问题标题一模一样！）
-        const formUrl = formBaseUrl + "?订单编号=" + encodeURIComponent(currentOrderId);
+        const formUrl = formBaseUrl + "订单编号" + encodeURIComponent(currentOrderId);
 
         // 4. 生成二维码
         const qrContainer = document.getElementById("qrcode");
