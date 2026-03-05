@@ -353,16 +353,17 @@
             tag.style.display = 'block';
         }
         
-        // ======= 新增：生成工人报工二维码 =======
+                // ======= 新增：生成工人报工二维码 =======
         // 1. 获取当前链接中的订单编号
         const currentOrderId = getQueryParam('order_id');
         
-        // 2. 拼接您的腾讯文档收集表链接（请把这里换成您真实的表单链接！）
-        // 假设您的表单里有一个叫 order_id 的参数用来接收订单号
+        // 2. 您的真实表单链接
         const formBaseUrl = "https://doc.weixin.qq.com/smartsheet/form/1_wpOzrBcwAAn6Iu-iVpkOBRmMkDNYUm3w_330712";
-        const formUrl = formBaseUrl + "?order_id=" + encodeURIComponent(currentOrderId);
+        
+        // 3. 拼接参数，实现自动代入（注意：这里的"订单编号"必须和您表单里的问题标题一模一样！）
+        const formUrl = formBaseUrl + "?订单编号=" + encodeURIComponent(currentOrderId);
 
-        // 3. 生成二维码
+        // 4. 生成二维码
         const qrContainer = document.getElementById("qrcode");
         if(qrContainer) {
             qrContainer.innerHTML = ""; // 清空容器
@@ -375,7 +376,7 @@
                 correctLevel : QRCode.CorrectLevel.M // 中等容错率
             });
             
-            // 4. (可选) 在二维码下方添加提示文字
+            // 5. 在二维码下方添加提示文字
             const hint = document.createElement("div");
             hint.style.fontSize = "12px";
             hint.style.textAlign = "center";
