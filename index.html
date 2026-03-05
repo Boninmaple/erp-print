@@ -352,35 +352,47 @@
             tag.innerText = status;
             tag.style.display = 'block';
         }
-                // 【新增功能】生成工人扫码填报的二维码
-        
-        // 1. 获取当前卡片的订单编号
+                // 库存标签
+        const status = getQueryParam('stock_status');
+        if (status && status.trim() !== '') {
+            const tag = document.getElementById('stock_tag');
+            tag.innerText = status;
+            tag.style.display = 'block';
+        }
+
+        // ======= 新增：生成工人报工二维码 =======
+        // 1. 获取当前链接中的订单编号
         const currentOrderId = getQueryParam('order_id');
         
-        // 2. 将这里的链接替换为您在第一步获取的“收集表链接”
-        // 注意：我们在链接末尾加上了 ?order_id= 参数，这样工人扫码打开后，如果您的系统支持，就能自动带入订单号，防止工人填错。
-        const formUrl = "https://doc.weixin.qq.com/form/share/https://doc.weixin.qq.com/smartsheet/form/1_wpOzrBcwAAn6Iu-iVpkOBRmMkDNYUm3w_330712" + "?order_id=" + currentOrderId;
-        
-        // 3. 清空原有内容并生成新二维码
+        // 2. 拼接您的腾讯文档收集表链接（请把这里换成您真实的表单链接！）
+        // 假设您的表单里有一个叫 order_id 的参数用来接收订单号
+        const formBaseUrl = "https://doc.weixin.qq.com/form/share/https://doc.weixin.qq.com/smartsheet/form/1_wpOzrBcwAAn6Iu-iVpkOBRmMkDNYUm3w_330712";
+        const formUrl = formBaseUrl + "?order_id=" + encodeURIComponent(currentOrderId);
+
+        // 3. 生成二维码
         const qrContainer = document.getElementById("qrcode");
-        qrContainer.innerHTML = ""; // 确保不会重复生成
-        
-        new QRCode(qrContainer, {
-            text: formUrl,
-            width: 90,  // 稍微调大一点点，方便车间环境下手机扫码
-            height: 90,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.M // 中等容错率，稍微弄脏也能扫出来
-        });
-        
-        // (可选) 在二维码下方加一行小字提示
-        const hint = document.createElement("div");
-        hint.style.fontSize = "10px";
-        hint.style.textAlign = "center";
-        hint.style.marginTop = "2px";
-        hint.innerText = "扫码报工";
-        qrContainer.appendChild(hint);
+        if(qrContainer) {
+            qrContainer.innerHTML = ""; // 清空容器
+            new QRCode(qrContainer, {
+                text: formUrl,
+                width: 90,  // 设置二维码大小
+                height: 90,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M // 中等容错率
+            });
+            
+            // 4. (可选) 在二维码下方添加提示文字
+            const hint = document.createElement("div");
+            hint.style.fontSize = "12px";
+            hint.style.textAlign = "center";
+            hint.style.marginTop = "2px";
+            hint.style.fontWeight = "bold";
+            hint.innerText = "扫码报工";
+            qrContainer.appendChild(hint);
+        }
+        // ========================================
+
     </script>
 </body>
 </html>
