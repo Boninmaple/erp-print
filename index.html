@@ -362,6 +362,10 @@
                 margin: 5          // 边距
             });
         }
+                // 延迟 0.8秒（等待条形码渲染完成）后，自动唤起浏览器打印窗口
+        setTimeout(function() {
+            window.print();
+        }, 800);
     </script>
 </body>
 </html>
