@@ -352,14 +352,7 @@
             tag.innerText = status;
             tag.style.display = 'block';
         }
-                // 库存标签
-        const status = getQueryParam('stock_status');
-        if (status && status.trim() !== '') {
-            const tag = document.getElementById('stock_tag');
-            tag.innerText = status;
-            tag.style.display = 'block';
-        }
-
+        
         // ======= 新增：生成工人报工二维码 =======
         // 1. 获取当前链接中的订单编号
         const currentOrderId = getQueryParam('order_id');
