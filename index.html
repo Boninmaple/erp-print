@@ -134,13 +134,13 @@
         <!-- 头部区域 -->
         <div class="header">
             <div class="logo-box">
+                <!-- 这里的logo如果没显示请确认路径 -->
                 <img src="logo.jpg" alt="Logo" class="logo-img">
                 <div id="stock_tag" class="stock-tag"></div>
             </div>
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
             
-            <!-- 这里替换成了条形码容器 -->
             <svg id="barcode" style="position: absolute; top: 10px; right: 0; max-width: 180px;"></svg>
         </div>
 
@@ -306,10 +306,22 @@
     </div>
 
     <script>
+        // ==========================================
+        // ✨ 核心修复：防截断的 getQueryParam 函数 ✨
+        // ==========================================
         function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
+            let searchStr = window.location.search;
+            
+            // 如果网址中含有 #，它和它后面的内容会被浏览器放进 hash 中
+            // 我们需要把它拿出来，将 # 替换为安全的编码 %23，拼接到原查询参数后面
+            if (window.location.hash) {
+                searchStr += "%23" + window.location.hash.substring(1);
+            }
+            
+            const urlParams = new URLSearchParams(searchStr);
             return urlParams.get(name) || "";
         }
+        // ==========================================
 
         // 填充基础数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
@@ -362,7 +374,8 @@
                 margin: 5          // 边距
             });
         }
-                // 延迟 0.8秒（等待条形码渲染完成）后，自动唤起浏览器打印窗口
+
+        // 延迟 0.8秒（等待条形码渲染完成）后，自动唤起浏览器打印窗口
         setTimeout(function() {
             window.print();
         }, 800);
