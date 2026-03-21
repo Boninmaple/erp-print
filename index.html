@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>生产流程工艺卡</title>
-    <!-- 引入条形码专用库，替换原来的二维码库 -->
+    <!-- 引入条形码专用库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+    <!-- ✨ 新增：引入强大的中文转拼音库 ✨ -->
+    <script src="https://unpkg.com/pinyin-pro"></script>
+
     <style>
         /* 1. 全局复位 */
         * { box-sizing: border-box; }
@@ -134,7 +137,6 @@
         <!-- 头部区域 -->
         <div class="header">
             <div class="logo-box">
-                <!-- 这里的logo如果没显示请确认路径 -->
                 <img src="logo.jpg" alt="Logo" class="logo-img">
                 <div id="stock_tag" class="stock-tag"></div>
             </div>
@@ -156,6 +158,7 @@
                 <td class="bg-gray">客户名称</td>
                 <td id="client_name"></td>
                 <td class="bg-gray">订单编号</td>
+                <!-- 这里的展示内容依然是未经修改的原版文本(包含中文) -->
                 <td id="order_id"></td>
             </tr>
             <tr class="h-35">
@@ -306,22 +309,14 @@
     </div>
 
     <script>
-        // ==========================================
-        // ✨ 核心修复：防截断的 getQueryParam 函数 ✨
-        // ==========================================
         function getQueryParam(name) {
             let searchStr = window.location.search;
-            
-            // 如果网址中含有 #，它和它后面的内容会被浏览器放进 hash 中
-            // 我们需要把它拿出来，将 # 替换为安全的编码 %23，拼接到原查询参数后面
             if (window.location.hash) {
                 searchStr += "%23" + window.location.hash.substring(1);
             }
-            
             const urlParams = new URLSearchParams(searchStr);
             return urlParams.get(name) || "";
         }
-        // ==========================================
 
         // 填充基础数据
         document.getElementById('client_name').innerText = getQueryParam('client_name');
@@ -362,16 +357,28 @@
             tag.style.display = 'block';
         }
 
-        // ======= 生成右上角条形码 =======
+        // ======= ✨ 核心优化：智能拼音条形码生成 ✨ =======
         const currentOrderId = getQueryParam('order_id');
+        
         if(currentOrderId) {
-            JsBarcode("#barcode", currentOrderId, {
-                format: "CODE128", // 支持字母和数字的条码格式
-                width: 1.5,        // 线条粗细
-                height: 45,        // 条码高度
-                displayValue: true,// 是否在下方显示数字
-                fontSize: 14,      // 数字大小
-                margin: 5          // 边距
+            let barcodeString = currentOrderId;
+
+            // 如果字符串中包含中文字符 (利用正则表达式检测)
+            if (/[\u4e00-\u9fa5]/.test(currentOrderId)) {
+                // 调用 pinyinPro，pattern: 'first' 代表取首字母，toneType: 'none' 代表不要声调
+                // 默认它会把非中文（字母数字）完整保留下来，最后转成全部大写字母并去掉空格
+                barcodeString = pinyinPro.pinyin(currentOrderId, { pattern: 'first', toneType: 'none' })
+                                         .replace(/\s+/g, '')
+                                         .toUpperCase();
+            }
+
+            JsBarcode("#barcode", barcodeString, {
+                format: "CODE128", 
+                width: 1.5,        
+                height: 45,        
+                displayValue: true,// 底部显示的文字也会同步成拼音首字母格式
+                fontSize: 14,      
+                margin: 5          
             });
         }
 
