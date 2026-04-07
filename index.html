@@ -138,6 +138,11 @@
             .no-print { display: none !important; }
             body { padding: 0; margin: 0; }
             .sheet-container { width: 100%; max-width: 100%; }
+            /* 确保打印时能打印出红色字体 */
+            #cust_req {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -280,7 +285,8 @@
             </colgroup>
             <tr>
                 <td class="bg-gray h-remarks">备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
-                <td class="text-left" style="vertical-align: top; padding: 5px;" id="cust_req"></td>
+                <!-- ✨ 这里修改了样式：color: red; font-weight: bold; font-size: 18px; ✨ -->
+                <td class="text-left" style="vertical-align: top; padding: 5px; color: red; font-weight: bold; font-size: 18px;" id="cust_req"></td>
             </tr>
         </table>
 
