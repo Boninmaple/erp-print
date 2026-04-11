@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>生产流程工艺卡</title>
     
-    <!-- 引入二维码专用库 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- ✨ 核心修复：引入原生支持中文的现代二维码库 ✨ -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     
+    <!-- 如果二维码不再需要强行将中文转拼音，此库可以移除。但如果你的其他逻辑还需要，保留亦可 -->
+    <script src="https://unpkg.com/pinyin-pro"></script>
+
     <style>
         /* 1. 全局复位 */
         * { box-sizing: border-box; }
@@ -18,12 +21,14 @@
             color: black;
             font-size: 15px; 
         }
+
         /* 2. 打印容器 */
         .sheet-container {
             max-width: 210mm;
             margin: 0 auto;
             position: relative;
         }
+
         /* 3. 头部区域 */
         .header {
             text-align: center;
@@ -33,6 +38,7 @@
             min-height: 120px;
             width: 100%;
         }
+
         /* Logo */
         .logo-box {
             position: absolute;
@@ -48,6 +54,7 @@
             width: auto;
             display: block;
         }
+
         /* 库存状态标记 */
         .stock-tag {
             margin-top: 10px;      
@@ -61,6 +68,7 @@
             background-color: #fff;
             letter-spacing: 2px;   
         }
+
         /* 标题 */
         .company-title {
             font-size: 26px;
@@ -77,6 +85,7 @@
             letter-spacing: 5px;
             margin: 0 auto;
         }
+
         /* 4. 表格样式 */
         .grid-table {
             width: 100%;
@@ -123,11 +132,13 @@
             font-weight: bold;
             display: block;
         }
+
         /* 5. 打印适配 */
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; margin: 0; }
             .sheet-container { width: 100%; max-width: 100%; }
+            /* 确保打印时能打印出红色字体 */
             #cust_req {
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
@@ -146,7 +157,8 @@
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
             
-            <div id="qrcode" style="position: absolute; top: 10px; right: 20px;"></div>
+            <!-- ✨ 修复点：将 div 换成了 canvas，新的库需要用 canvas 渲染 ✨ -->
+            <canvas id="qrcode" style="position: absolute; top: 5px; right: 20px;"></canvas>
         </div>
 
         <!-- 第一部分：基础信息 -->
@@ -196,12 +208,23 @@
         <!-- 第二部分：15道工序 -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 15%"> <col style="width: 10%"> <col style="width: 10%"> 
-                <col style="width: 10%"> <col style="width: 15%"> <col style="width: 15%"> <col style="width: 25%"> 
+                <col style="width: 15%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 10%"> 
+                <col style="width: 15%"> 
+                <col style="width: 15%"> 
+                <col style="width: 25%"> 
             </colgroup>
             <thead>
                 <tr class="bg-gray h-30">
-                    <td>工序名称</td><td>备注</td><td>数量</td><td>不合格</td><td>经手人</td><td>检查员</td><td>日期</td>
+                    <td>工序名称</td>
+                    <td>备注</td>
+                    <td>数量</td>
+                    <td>不合格</td>
+                    <td>经手人</td>
+                    <td>检查员</td>
+                    <td>日期</td>
                 </tr>
             </thead>
             <tbody>
@@ -226,35 +249,60 @@
         <!-- 第三部分：技术要求 -->
         <table class="grid-table">
             <colgroup>
-                <col style="width: 15%"> <col style="width: 14%"> <col style="width: 14%">
-                <col style="width: 14%"> <col style="width: 14%"> <col style="width: 14%"> <col style="width: 15%">
+                <col style="width: 15%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 14%">
+                <col style="width: 15%">
             </colgroup>
             <tr class="h-30">
                 <td class="bg-gray">技术要求</td>
-                <td class="bg-gray">高度</td><td class="bg-gray">盘大小</td><td class="bg-gray">R角</td>
-                <td class="bg-gray">内孔</td><td class="bg-gray">角度</td><td class="bg-gray">下料长度</td>
+                <td class="bg-gray">高度</td>
+                <td class="bg-gray">盘大小</td>
+                <td class="bg-gray">R角</td>
+                <td class="bg-gray">内孔</td>
+                <td class="bg-gray">角度</td>
+                <td class="bg-gray">下料长度</td>
             </tr>
             <tr class="h-35">
                 <td></td> 
-                <td id="tech_height"></td> <td id="tech_disk_size"></td> <td id="tech_r_angle"></td> 
-                <td id="tech_inner_hole"></td> <td id="tech_angle"></td> <td id="tech_cut_length"></td>
+                <td id="tech_height"></td> 
+                <td id="tech_disk_size"></td> 
+                <td id="tech_r_angle"></td> 
+                <td id="tech_inner_hole"></td> 
+                <td id="tech_angle"></td> 
+                <td id="tech_cut_length"></td>
             </tr>
         </table>
 
         <!-- 第四部分：综合信息 -->
         <table class="grid-table">
-            <colgroup> <col style="width: 15%"> <col style="width: 85%"> </colgroup>
+            <colgroup>
+                <col style="width: 15%">
+                <col style="width: 85%">
+            </colgroup>
             <tr>
                 <td class="bg-gray h-remarks">备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
+                <!-- ✨ 这里去掉了加粗，保留了红色和18px字号 ✨ -->
                 <td class="text-left" style="vertical-align: top; padding: 5px; color: red; font-size: 18px;" id="cust_req"></td>
             </tr>
         </table>
 
         <!-- 第五部分：签字栏 -->
         <table class="grid-table">
-            <colgroup> <col style="width: 25%"> <col style="width: 25%"> <col style="width: 25%"> <col style="width: 25%"> </colgroup>
+            <colgroup>
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+                <col style="width: 25%">
+            </colgroup>
             <tr class="bg-gray h-35">
-                <td>制单人</td><td>工艺审核</td><td>生产复核</td><td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
+                <td>制单人</td>
+                <td>工艺审核</td>
+                <td>生产复核</td>
+                <td>采&nbsp;&nbsp;&nbsp;&nbsp;购</td>
             </tr>
             <tr>
                 <td class="sign-cell">
@@ -285,7 +333,7 @@
             return urlParams.get(name) || "";
         }
 
-        // 填充数据
+        // 填充基础数据
         const clientName = getQueryParam('client_name');
         const orderId = getQueryParam('order_id');
 
@@ -299,16 +347,22 @@
         document.getElementById('qty').innerText = getQueryParam('qty');
         document.getElementById('date_order').innerText = getQueryParam('date_order');
         document.getElementById('date_due').innerText = getQueryParam('date_due');
+
+        // 填充技术数据
         document.getElementById('tech_height').innerText = getQueryParam('height');
         document.getElementById('tech_disk_size').innerText = getQueryParam('disk_size');
         document.getElementById('tech_r_angle').innerText = getQueryParam('r_angle');
         document.getElementById('tech_inner_hole').innerText = getQueryParam('inner_hole');
         document.getElementById('tech_angle').innerText = getQueryParam('angle');
         document.getElementById('tech_cut_length').innerText = getQueryParam('cut_length');
-        const info = getQueryParam('cust_req');
-        if(info) document.getElementById('cust_req').innerText = info;
 
-        // 制单日期
+        // 填充综合信息
+        const info = getQueryParam('cust_req');
+        if(info) {
+            document.getElementById('cust_req').innerText = info;
+        }
+
+        // 制单人日期
         var today = new Date();
         var dateStr = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0');
         document.getElementById('maker_date').innerText = dateStr;
@@ -321,51 +375,31 @@
             tag.style.display = 'block';
         }
 
-        // ======= ✨ 核心优化：解决中文乱码逻辑 ✨ =======
-        
-        /**
-         * 解决 qrcode.js 不支持中文的转换函数
-         * 原理：将字符串转换为 UTF-8 编码字节流
-         */
-        function utf16to8(str) {
-            var out, i, len, c;
-            out = "";
-            len = str.length;
-            for(i = 0; i < len; i++) {
-                c = str.charCodeAt(i);
-                if ((c >= 0x0001) && (c <= 0x007F)) {
-                    out += str.charAt(i);
-                } else if (c > 0x07FF) {
-                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
-                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
-                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
-                } else {
-                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
-                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+        // ======= ✨ 核心优化：生成完美支持中文的二维码 ✨ =======
+
+        // 这里你可以自由组合想生成在二维码里的内容，无论是中文还是英文
+        // 比如你可以让它生成： "订单号：xxx 客户：某某某"
+        // 目前按照你的逻辑，默认取 orderId，如果没有就取 clientName
+        const qrRawContent = orderId || clientName; 
+
+        if (qrRawContent && qrRawContent.trim() !== "") {
+            // 调用新的二维码库生成
+            QRCode.toCanvas(document.getElementById('qrcode'), qrRawContent, {
+                width: 85,          // 二维码大小
+                margin: 1,          // 二维码白边宽度
+                color: {
+                    dark: '#000000',  // 二维码颜色
+                    light: '#ffffff'  // 背景颜色
                 }
-            }
-            return out;
-        }
-
-        // ======= ✨ 生成中文二维码 ✨ =======
-        
-        // 你想用哪个字段生成二维码？
-        // 如果想用订单号，请保留 orderId；如果想用客户名字，请改为 clientName
-        const qrRawContent = orderId || clientName || "无编号"; 
-
-        if(qrRawContent) {
-            new QRCode(document.getElementById("qrcode"), {
-                text: utf16to8(qrRawContent), // 使用转换函数包裹内容，支持中文
-                width: 80,
-                height: 80,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M
+            }, function (error) {
+                if (error) console.error("二维码生成错误:", error);
             });
         }
 
-        // 延迟 0.8秒后自动打印
-        setTimeout(function() { window.print(); }, 800);
+        // 延迟 0.8秒后，自动唤起浏览器打印窗口
+        setTimeout(function() {
+            window.print();
+        }, 800);
     </script>
 </body>
 </html>
