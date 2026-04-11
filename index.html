@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>生产流程工艺卡</title>
     
-    <!-- ✨ 核心修复：引入原生支持中文的现代二维码库 ✨ -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- 引入二维码专用库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <!-- 如果二维码不再需要强行将中文转拼音，此库可以移除。但如果你的其他逻辑还需要，保留亦可 -->
     <script src="https://unpkg.com/pinyin-pro"></script>
@@ -157,8 +157,8 @@
             <h1 class="company-title">温州博江管件有限公司</h1>
             <div class="card-name">生产流程工艺卡</div>
             
-            <!-- ✨ 修复点：将 div 换成了 canvas，新的库需要用 canvas 渲染 ✨ -->
-            <canvas id="qrcode" style="position: absolute; top: 5px; right: 20px;"></canvas>
+            <!-- 这里原本是 svg，现在改为 div 用于装载二维码 -->
+            <div id="qrcode" style="position: absolute; top: 10px; right: 20px;"></div>
         </div>
 
         <!-- 第一部分：基础信息 -->
@@ -334,11 +334,8 @@
         }
 
         // 填充基础数据
-        const clientName = getQueryParam('client_name');
-        const orderId = getQueryParam('order_id');
-
-        document.getElementById('client_name').innerText = clientName;
-        document.getElementById('order_id').innerText = orderId;
+        document.getElementById('client_name').innerText = getQueryParam('client_name');
+        document.getElementById('order_id').innerText = getQueryParam('order_id');
         document.getElementById('contract_no').innerText = getQueryParam('contract_no');
         document.getElementById('prod_name').innerText = getQueryParam('prod_name');
         document.getElementById('spec').innerText = getQueryParam('spec');
@@ -375,24 +372,25 @@
             tag.style.display = 'block';
         }
 
-        // ======= ✨ 核心优化：生成完美支持中文的二维码 ✨ =======
+        // ======= ✨ 核心优化：二维码生成 ✨ =======
+        const currentOrderId = getQueryParam('order_id');
+        
+        if(currentOrderId) {
+            // 这里将原先复杂的拼音转换去掉了，因为二维码原生支持中文
+            // 如果你想用手机扫码直接打开你们内部的报工表单网页，可以将下面注释的代码打开并修改网址：
+            // const formUrl = "https://你的企业微信或ERP表单地址.com/report";
+            // let qrContent = `${formUrl}?orderId=${encodeURIComponent(currentOrderId)}&prod=${encodeURIComponent(getQueryParam('prod_name'))}`;
+            
+            // 当前默认直接存储订单号，供扫码枪录入
+            let qrContent = currentOrderId;
 
-        // 这里你可以自由组合想生成在二维码里的内容，无论是中文还是英文
-        // 比如你可以让它生成： "订单号：xxx 客户：某某某"
-        // 目前按照你的逻辑，默认取 orderId，如果没有就取 clientName
-        const qrRawContent = orderId || clientName; 
-
-        if (qrRawContent && qrRawContent.trim() !== "") {
-            // 调用新的二维码库生成
-            QRCode.toCanvas(document.getElementById('qrcode'), qrRawContent, {
-                width: 85,          // 二维码大小
-                margin: 1,          // 二维码白边宽度
-                color: {
-                    dark: '#000000',  // 二维码颜色
-                    light: '#ffffff'  // 背景颜色
-                }
-            }, function (error) {
-                if (error) console.error("二维码生成错误:", error);
+            new QRCode(document.getElementById("qrcode"), {
+                text: qrContent,
+                width: 80,          // 二维码宽度，可以根据打印需要调整 60~100 之间
+                height: 80,         // 二维码高度
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M  // M级容错（15%）足够清晰识别
             });
         }
 
