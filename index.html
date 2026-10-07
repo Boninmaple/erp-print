@@ -132,6 +132,12 @@
             height: 50px;
         }
 
+        /* 库存说明较长或含多行时，允许单元格自动换行 */
+        #stock_info {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
         /* 签字栏 */
         .sign-cell {
             height: 60px;
@@ -267,8 +273,8 @@
             </tr>
 
             <tr class="h-35">
-                <td class="bg-gray">材料编号</td>
-                <td colspan="3" class="text-left"></td>
+                <td class="bg-gray">库存情况</td>
+                <td id="stock_info" colspan="3" class="text-left"></td>
             </tr>
 
         </table>
@@ -676,6 +682,10 @@
 
         document.getElementById('date_due').innerText =
             getQueryParam('date_due');
+
+        // 库存情况：与左上角 stock_status 标签分别传入
+        document.getElementById('stock_info').textContent =
+            getQueryParam('stock_info');
 
 
         // =========================
